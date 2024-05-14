@@ -1,8 +1,8 @@
-import 'package:coincierge/features/splash/ui/controller/splash_controller.dart';
-import 'package:coincierge/utils/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/routes/app_routes.dart';
+import '../../../../utils/extensions/build_context.dart';
+import '../controller/splash_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({required this.controller, super.key});

@@ -12,10 +12,12 @@ class SplashModule extends Module {
 
   @override
   void routes(RouteManager r) {
-    r.child(Modular.initialRoute,
-        child: (_) => SplashScreen(
-              controller: Modular.get<SplashController>(),
-            ));
+    r.child(
+      Modular.initialRoute,
+      child: (_) => SplashScreen(
+        controller: Modular.get<SplashController>(),
+      ),
+    );
     super.routes(r);
   }
 }
