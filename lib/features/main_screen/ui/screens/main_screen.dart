@@ -13,6 +13,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   @override
+  void initState() {
+    super.initState();
+    widget.controller.getCurrencyValues();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(

@@ -57,7 +57,6 @@ class Http implements IHttp {
   @override
   Future<HttpResponse<T>> post<T>({
     required String endpoint,
-    required dynamic data,
     required String baseUrl,
     int timeout = 25,
     Options? options,
@@ -68,7 +67,6 @@ class Http implements IHttp {
       )
           .post(
             endpoint,
-            data: data,
             options: options,
           )
           .timeout(

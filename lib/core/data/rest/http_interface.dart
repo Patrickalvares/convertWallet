@@ -9,7 +9,6 @@ abstract interface class IHttp {
   });
   Future<HttpResponse<T>> post<T>({
     required String endpoint,
-    required dynamic data,
     required String baseUrl,
     int timeout = 25,
     Options? options,
