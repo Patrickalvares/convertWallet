@@ -11,7 +11,7 @@ class MainScreenDatasource {
     try {
       final response = await http.get(
         endpoint: endpoint,
-        baseUrl: 'https://economia.awesomeapi.com.br/json/last/',
+        baseUrl: 'https://api.freecurrencyapi.com/v1/latest?apikey=',
       );
       if (response.statusCode == 200) {
         return response.data;

@@ -60,37 +60,19 @@ class _MainScreenState extends State<MainScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.attach_money, color: Colors.teal),
                   title: Text(
-                    '${currency.code}/${currency.codeIn}',
+                    '${widget.controller.selectedCurrency.code}/${currency.code}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   subtitle: Text(
-                    currency.name,
+                    currency.rate.toStringAsFixed(2),
                     style: const TextStyle(fontSize: 12),
                   ),
-                  trailing: Column(
+                  trailing: const Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Alta: ${currency.highValue}',
-                        style: const TextStyle(fontSize: 9),
-                      ),
-                      Text(
-                        'Baixa: ${currency.lowValue}',
-                        style: const TextStyle(fontSize: 9),
-                      ),
-                      Text(
-                        'Compra: ${currency.bid}',
-                        style: const TextStyle(fontSize: 9),
-                      ),
-                      Text(
-                        'Venda: ${currency.ask}',
-                        style: const TextStyle(fontSize: 9),
-                      ),
-                    ],
                   ),
                 ),
               );

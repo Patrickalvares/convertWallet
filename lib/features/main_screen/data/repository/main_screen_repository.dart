@@ -14,15 +14,14 @@ class MainScreenRepository {
         endpoint: params,
       );
 
-      if (response is Map<String, dynamic>) {
-        final List<CurrencyByCurrency> currencies = [];
-        response.forEach((key, value) {
-          currencies.add(CurrencyByCurrency.fromJson(value));
+      final List<CurrencyByCurrency> currencies = [];
+      if (response.containsKey('data')) {
+        final data = response['data'] as Map<String, dynamic>;
+        data.forEach((key, value) {
+          currencies.add(CurrencyByCurrency.fromJson(key, value));
         });
-        return currencies;
-      } else {
-        throw ApplicationException('Erro ao obter dados');
       }
+      return currencies;
     } on ApplicationException catch (e) {
       throw e;
     }
