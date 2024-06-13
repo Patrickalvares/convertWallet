@@ -14,7 +14,11 @@ class MainScreenController extends BaseController {
     getCurrencyValuesLoading = false;
     update();
 
-    await repository.getMainScreenData(params: generateCurrencyCombinations(selectedCurrency)).then((value) {
+    await repository
+        .getMainScreenData(
+      params: generateCurrencyCombinations(selectedCurrency),
+    )
+        .then((value) {
       currencies = value;
     }).catchError((error) {});
 

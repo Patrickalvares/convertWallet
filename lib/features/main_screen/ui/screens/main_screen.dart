@@ -77,12 +77,18 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                   subtitle: Text(
-                    isTargetByStandardRate ? currency.standardByTargetValue.toStringAsFixed(2) : currency.targetByStandardRate.toStringAsFixed(2),
+                    isTargetByStandardRate ? '${widget.controller.selectedCurrency.name} / ${currency.targetCurrency.name}' : '${currency.targetCurrency.name} / ${widget.controller.selectedCurrency.name}',
                     style: const TextStyle(fontSize: 12),
                   ),
-                  trailing: const Column(
+                  trailing: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        isTargetByStandardRate ? currency.standardByTargetValue.toStringAsFixed(2) : currency.targetByStandardRate.toStringAsFixed(2),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
                   ),
                 ),
               );
