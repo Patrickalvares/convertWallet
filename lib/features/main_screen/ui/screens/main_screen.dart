@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../controller/main_screen_controller.dart';
 
@@ -22,6 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Valores de Câmbio',
@@ -32,17 +34,9 @@ class _MainScreenState extends State<MainScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
-            color: Colors.white,
-            iconSize: 35,
-            onPressed: () {
-              widget.controller.getCurrencyValues();
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.currency_exchange_sharp),
             color: Colors.white,
-            iconSize: 35,
+            iconSize: 30,
             onPressed: () {
               isTargetByStandardRate = !isTargetByStandardRate;
               widget.controller.update();
@@ -54,72 +48,117 @@ class _MainScreenState extends State<MainScreen> {
       body: AnimatedBuilder(
         animation: widget.controller,
         builder: (context, child) {
-          if (widget.controller.currencieByCurrencys.isEmpty || !widget.controller.getCurrencyValuesLoading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.teal,
+          return Visibility(
+            replacement: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return Shimmer(
+                  color: Colors.grey,
+                  child: Card(
+                    color: Colors.grey[200],
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: const ListTile(
+                      leading: Text(
+                        '',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      title: Text(
+                        '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      trailing: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            visible: !(widget.controller.currencieByCurrencys.isEmpty || !widget.controller.getCurrencyValuesLoading),
+            child: RefreshIndicator(
+              onRefresh: () => widget.controller.getCurrencyValues(),
+              child: ListView.builder(
+                itemCount: widget.controller.currencieByCurrencys.length,
+                itemBuilder: (context, index) {
+                  final currencieByCurrency = widget.controller.currencieByCurrencys[index];
+                  return Card(
+                    color: Colors.grey[200],
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Visibility(
+                      visible: isTargetByStandardRate,
+                      replacement: ListTile(
+                        leading: Text(
+                          currencieByCurrency.targetCurrency.flagEmoji,
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                        title: Text(
+                          '${currencieByCurrency.code}/${widget.controller.selectedCurrency.code}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '${currencieByCurrency.targetCurrency.name} / ${widget.controller.selectedCurrency.name}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.controller.selectedCurrency.sifra + currencieByCurrency.targetByStandardRate.toStringAsFixed(2).replaceAll('.', ','),
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      ),
+                      child: ListTile(
+                        leading: Text(
+                          currencieByCurrency.targetCurrency.flagEmoji,
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                        title: Text(
+                          '${widget.controller.selectedCurrency.code}/${currencieByCurrency.code}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '${widget.controller.selectedCurrency.name} / ${currencieByCurrency.targetCurrency.name}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              currencieByCurrency.targetCurrency.sifra + currencieByCurrency.standardByTargetValue.toStringAsFixed(2).replaceAll('.', ','),
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          }
-          return ListView.builder(
-            itemCount: widget.controller.currencieByCurrencys.length,
-            itemBuilder: (context, index) {
-              final currencieByCurrency = widget.controller.currencieByCurrencys[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Visibility(
-                  visible: isTargetByStandardRate,
-                  replacement: ListTile(
-                    leading: const Icon(Icons.attach_money, color: Colors.teal),
-                    title: Text(
-                      '${currencieByCurrency.code}/${widget.controller.selectedCurrency.code}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    subtitle: Text(
-                      '${currencieByCurrency.targetCurrency.name} / ${widget.controller.selectedCurrency.name}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    trailing: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.controller.selectedCurrency.sifra + currencieByCurrency.targetByStandardRate.toStringAsFixed(2),
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: const Icon(Icons.attach_money, color: Colors.teal),
-                    title: Text(
-                      '${widget.controller.selectedCurrency.code}/${currencieByCurrency.code}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    subtitle: Text(
-                      '${widget.controller.selectedCurrency.name} / ${currencieByCurrency.targetCurrency.name}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    trailing: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          currencieByCurrency.targetCurrency.sifra + currencieByCurrency.standardByTargetValue.toStringAsFixed(2),
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            ),
           );
         },
       ),

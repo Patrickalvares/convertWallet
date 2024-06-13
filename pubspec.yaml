@@ -38,6 +38,7 @@ dependencies:
   flutter_modular: ^6.3.3
   dio: ^5.4.3+1
   flutter_dotenv: ^5.1.0
+  shimmer_animation: ^2.1.0+1
 
 dev_dependencies:
   flutter_test:

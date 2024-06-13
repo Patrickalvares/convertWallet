@@ -1,21 +1,23 @@
 enum Currency {
-  BRL(name: 'Real Brasileiro', code: 'BRL', sifra: 'R\$'),
-  USD(name: 'Dólar Americano', code: 'USD', sifra: '\$'),
-  EUR(name: 'Euro', code: 'EUR', sifra: '€'),
-  JPY(name: 'Iene Japonês', code: 'JPY', sifra: '¥'),
-  GBP(name: 'Libra Esterlina', code: 'GBP', sifra: '£'),
-  CHF(name: 'Franco Suíço', code: 'CHF', sifra: '₣'),
-  CNY(name: 'Yuan Chinês', code: 'CNY', sifra: '元'),
+  BRL(name: 'Real Brasileiro', code: 'BRL', sifra: 'R\$', flagEmoji: '🇧🇷'),
+  USD(name: 'Dólar Americano', code: 'USD', sifra: '\$', flagEmoji: '🇺🇸'),
+  EUR(name: 'Euro', code: 'EUR', sifra: '€', flagEmoji: '🇪🇺'),
+  JPY(name: 'Iene Japonês', code: 'JPY', sifra: '¥', flagEmoji: '🇯🇵'),
+  GBP(name: 'Libra Esterlina', code: 'GBP', sifra: '£', flagEmoji: '🇬🇧'),
+  CHF(name: 'Franco Suíço', code: 'CHF', sifra: '₣', flagEmoji: '🇨🇭'),
+  CNY(name: 'Yuan Chinês', code: 'CNY', sifra: '元', flagEmoji: '🇨🇳'),
   ;
 
   const Currency({
     required this.name,
     required this.code,
     required this.sifra,
+    required this.flagEmoji,
   });
   final String name;
   final String code;
   final String sifra;
+  final String flagEmoji;
 
   static Currency? fromCode(String code) {
     for (final currency in Currency.values) {
