@@ -6,7 +6,7 @@ import '../../domain/entities/currency_by_currency.dart';
 class MainScreenController extends BaseController {
   MainScreenController({required this.repository});
   final MainScreenRepository repository;
-  List<CurrencyByCurrency> currencies = [];
+  List<CurrencyByCurrency> currencieByCurrencys = [];
   bool getCurrencyValuesLoading = false;
   Currency selectedCurrency = Currency.BRL;
 
@@ -19,7 +19,7 @@ class MainScreenController extends BaseController {
       params: generateCurrencyCombinations(selectedCurrency),
     )
         .then((value) {
-      currencies = value;
+      currencieByCurrencys = value;
     }).catchError((error) {});
 
     getCurrencyValuesLoading = true;
