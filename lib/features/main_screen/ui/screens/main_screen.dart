@@ -12,6 +12,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  bool isTargetByStandardRate = false;
   @override
   void initState() {
     super.initState();
@@ -38,6 +39,15 @@ class _MainScreenState extends State<MainScreen> {
               widget.controller.getCurrencyValues();
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.currency_exchange_sharp),
+            color: Colors.white,
+            iconSize: 35,
+            onPressed: () {
+              isTargetByStandardRate = !isTargetByStandardRate;
+              widget.controller.update();
+            },
+          ),
         ],
         backgroundColor: Colors.teal,
       ),
@@ -60,14 +70,14 @@ class _MainScreenState extends State<MainScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.attach_money, color: Colors.teal),
                   title: Text(
-                    '${widget.controller.selectedCurrency.code}/${currency.code}',
+                    isTargetByStandardRate ? '${widget.controller.selectedCurrency.code}/${currency.code}' : '${currency.code}/${widget.controller.selectedCurrency.code}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   subtitle: Text(
-                    currency.rate.toStringAsFixed(2),
+                    isTargetByStandardRate ? currency.standardByTargetValue.toStringAsFixed(2) : currency.targetByStandardRate.toStringAsFixed(2),
                     style: const TextStyle(fontSize: 12),
                   ),
                   trailing: const Column(

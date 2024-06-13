@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../core/domain/entities/currencys.dart';
+import '../../../../utils/helpers/base_controller.dart';
 import '../../data/repository/main_screen_repository.dart';
 import '../../domain/entities/currency_by_currency.dart';
 
-class MainScreenController with ChangeNotifier {
+class MainScreenController extends BaseController {
   MainScreenController({required this.repository});
   final MainScreenRepository repository;
   List<CurrencyByCurrency> currencies = [];
@@ -13,14 +12,14 @@ class MainScreenController with ChangeNotifier {
 
   Future<void> getCurrencyValues() async {
     getCurrencyValuesLoading = false;
-    notifyListeners();
+    update();
 
     await repository.getMainScreenData(params: generateCurrencyCombinations(selectedCurrency)).then((value) {
       currencies = value;
     }).catchError((error) {});
 
     getCurrencyValuesLoading = true;
-    notifyListeners();
+    update();
   }
 
   String generateCurrencyCombinations(Currency selectedCurrency) {
@@ -31,7 +30,6 @@ class MainScreenController with ChangeNotifier {
         combinations.add('${currency.code}');
       }
     }
-    final String params = "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
-    return params;
+    return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
   }
 }
