@@ -6,6 +6,7 @@ enum Currency {
   GBP(name: 'Libra Esterlina', code: 'GBP', sifra: '£', flagEmoji: '🇬🇧'),
   CHF(name: 'Franco Suíço', code: 'CHF', sifra: '₣', flagEmoji: '🇨🇭'),
   CNY(name: 'Yuan Chinês', code: 'CNY', sifra: '元', flagEmoji: '🇨🇳'),
+  NZD(name: 'Dólar Neozelandês', code: 'NZD', sifra: '\$', flagEmoji: '🇳🇿'),
   ;
 
   const Currency({
