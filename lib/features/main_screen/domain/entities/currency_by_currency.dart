@@ -22,6 +22,20 @@ class CurrencyByCurrency {
     }
   }
 
+  CurrencyByCurrency copyWith({
+    String? code,
+    double? standardByTargetValue,
+    double? targetByStandardRate,
+    Currency? targetCurrency,
+  }) {
+    return CurrencyByCurrency(
+      code: code ?? this.code,
+      standardByTargetValue: standardByTargetValue ?? this.standardByTargetValue,
+      targetByStandardRate: targetByStandardRate ?? this.targetByStandardRate,
+      targetCurrency: targetCurrency ?? this.targetCurrency,
+    );
+  }
+
   final String code;
   final double standardByTargetValue;
   final double targetByStandardRate;

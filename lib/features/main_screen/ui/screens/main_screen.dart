@@ -15,6 +15,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool isTargetByStandardRate = false;
+  final buscaController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -27,24 +29,29 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Valores de Câmbio',
+          'Coincierge',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
+        elevation: 2,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
         actions: [
           IconButton(
             icon: const Icon(Icons.currency_exchange_sharp),
-            color: Colors.white,
+            color: Colors.black,
             iconSize: 30,
             onPressed: () {
-              isTargetByStandardRate = !isTargetByStandardRate;
+              setState(() {
+                isTargetByStandardRate = !isTargetByStandardRate;
+              });
               widget.controller.update();
             },
           ),
         ],
-        backgroundColor: Colors.teal,
       ),
       body: AnimatedBuilder(
         animation: widget.controller,
@@ -52,12 +59,49 @@ class _MainScreenState extends State<MainScreen> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: DropdownButton<Currency>(
+                padding: const EdgeInsets.all(16),
+                child: TextFormField(
+                  controller: buscaController,
+                  cursorColor: Theme.of(context).primaryColor,
+                  autofillHints: ['Buscar por moeda'],
+                  onChanged: widget.controller.filtrarCurrencieByCurrencys,
+                  onSaved: (value) {
+                    if (value != null) {
+                      widget.controller.filtrarCurrencieByCurrencys(value);
+                      FocusScope.of(context).unfocus();
+                    }
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: Theme.of(context).primaryColor),
+                    hintText: 'Buscar por moeda',
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
+                child: DropdownButtonFormField<Currency>(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  ),
                   hint: const Text('Selecione uma moeda'),
                   value: widget.controller.selectedCurrency,
                   onChanged: (Currency? newValue) {
-                    widget.controller.selectedCurrency = newValue!;
+                    setState(() {
+                      widget.controller.selectedCurrency = newValue!;
+                    });
                     widget.controller.getCurrencyValues();
                     widget.controller.update();
                   },
@@ -119,9 +163,9 @@ class _MainScreenState extends State<MainScreen> {
                     color: Colors.black,
                     onRefresh: () => widget.controller.getCurrencyValues(),
                     child: ListView.builder(
-                      itemCount: widget.controller.currencieByCurrencys.length,
+                      itemCount: widget.controller.currencieByCurrencysFiltred.length,
                       itemBuilder: (context, index) {
-                        final currencieByCurrency = widget.controller.currencieByCurrencys[index];
+                        final currencieByCurrency = widget.controller.currencieByCurrencysFiltred[index];
                         return Card(
                           color: Colors.grey[200],
                           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

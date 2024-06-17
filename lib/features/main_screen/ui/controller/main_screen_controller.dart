@@ -7,6 +7,7 @@ class MainScreenController extends BaseController {
   MainScreenController({required this.repository});
   final MainScreenRepository repository;
   List<CurrencyByCurrency> currencieByCurrencys = [];
+  List<CurrencyByCurrency> currencieByCurrencysFiltred = [];
   bool getCurrencyValuesLoading = false;
   Currency selectedCurrency = Currency.BRL;
 
@@ -35,5 +36,20 @@ class MainScreenController extends BaseController {
       }
     }
     return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
+  }
+
+  Future<void> filtrarCurrencieByCurrencys(String value) async {
+    if (value.trim().isEmpty) {
+      currencieByCurrencysFiltred = List.from(currencieByCurrencys);
+    } else {
+      currencieByCurrencysFiltred = currencieByCurrencysFiltred
+          .where((element) {
+            final bool nomeMatches = element.code.toLowerCase().contains(value.toLowerCase()) || element.targetCurrency.name.toLowerCase().contains(value.toLowerCase());
+            return nomeMatches;
+          })
+          .map((imovel) => imovel.copyWith())
+          .toList();
+    }
+    update();
   }
 }
