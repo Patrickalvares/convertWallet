@@ -11,6 +11,11 @@ class MainScreenController extends BaseController {
   bool getCurrencyValuesLoading = false;
   Currency selectedCurrency = Currency.BRL;
 
+  void ininialized() {
+    currencieByCurrencysFiltred = currencieByCurrencys;
+    update();
+  }
+
   Future<void> getCurrencyValues() async {
     getCurrencyValuesLoading = false;
     update();
@@ -40,9 +45,9 @@ class MainScreenController extends BaseController {
 
   Future<void> filtrarCurrencieByCurrencys(String value) async {
     if (value.trim().isEmpty) {
-      currencieByCurrencysFiltred = List.from(currencieByCurrencys);
+      currencieByCurrencysFiltred = currencieByCurrencys;
     } else {
-      currencieByCurrencysFiltred = currencieByCurrencysFiltred
+      currencieByCurrencysFiltred = currencieByCurrencys
           .where((element) {
             final bool nomeMatches = element.code.toLowerCase().contains(value.toLowerCase()) || element.targetCurrency.name.toLowerCase().contains(value.toLowerCase());
             return nomeMatches;
