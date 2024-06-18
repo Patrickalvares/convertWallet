@@ -2,6 +2,8 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
+import '../../../../core/common_widgets/app_bar.dart';
+import '../../../../core/common_widgets/bottom_navigation_bar.dart';
 import '../../../../core/domain/entities/currencys.dart';
 import '../controller/main_screen_controller.dart';
 
@@ -17,6 +19,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   bool isTargetByStandardRate = false;
   final buscaController = TextEditingController();
+  NotchBottomBarController notchBottomBarController = NotchBottomBarController(index: 1);
 
   @override
   void initState() {
@@ -31,31 +34,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey.shade50,
-      appBar: AppBar(
-        title: const Text(
-          'Coincierge',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 2,
-        backgroundColor: Colors.blueGrey.shade700,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.currency_exchange_sharp),
-            color: Colors.white,
-            iconSize: 30,
-            onPressed: () {
-              setState(() {
-                isTargetByStandardRate = !isTargetByStandardRate;
-              });
-              widget.controller.update();
-            },
-          ),
-        ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(55),
+        child: SimpleAppBarWidget(),
       ),
       body: AnimatedBuilder(
         animation: widget.controller,
@@ -65,7 +46,56 @@ class _MainScreenState extends State<MainScreen> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                    padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 5),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<Currency>(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.blueGrey.shade100,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            ),
+                            hint: const Text('Selecione uma moeda'),
+                            value: widget.controller.selectedCurrency,
+                            onChanged: (Currency? newValue) {
+                              setState(() {
+                                widget.controller.selectedCurrency = newValue!;
+                              });
+                              widget.controller.getCurrencyValues();
+                              widget.controller.update();
+                            },
+                            items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                              return DropdownMenuItem<Currency>(
+                                value: currency,
+                                child: Text(
+                                  '${currency.flagEmoji} ${currency.name} (${currency.code})',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.currency_exchange_sharp),
+                          color: Colors.blueGrey.shade700,
+                          iconSize: 30,
+                          onPressed: () {
+                            setState(() {
+                              isTargetByStandardRate = !isTargetByStandardRate;
+                            });
+                            widget.controller.update();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5, left: 16, right: 16),
                     child: TextFormField(
                       controller: buscaController,
                       autofillHints: ['Buscar por moeda'],
@@ -86,38 +116,6 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 5),
-                    child: DropdownButtonFormField<Currency>(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.blueGrey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                      ),
-                      hint: const Text('Selecione uma moeda'),
-                      value: widget.controller.selectedCurrency,
-                      onChanged: (Currency? newValue) {
-                        setState(() {
-                          widget.controller.selectedCurrency = newValue!;
-                        });
-                        widget.controller.getCurrencyValues();
-                        widget.controller.update();
-                      },
-                      items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
-                        return DropdownMenuItem<Currency>(
-                          value: currency,
-                          child: Text(
-                            '${currency.flagEmoji} ${currency.name} (${currency.code})',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        );
-                      }).toList(),
                     ),
                   ),
                   Expanded(
@@ -244,56 +242,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: AnimatedNotchBottomBar(
-                  notchBottomBarController: NotchBottomBarController(),
-                  textOverflow: TextOverflow.visible,
-                  maxLine: 1,
-                  shadowElevation: 5,
-                  kBottomRadius: 50,
-                  color: Colors.blueGrey.shade400,
-                  itemLabelStyle: const TextStyle(fontSize: 15),
-                  bottomBarItems: [
-                    BottomBarItem(
-                      inActiveItem: const Icon(
-                        Icons.price_change,
-                        color: Colors.white,
-                      ),
-                      activeItem: Icon(
-                        Icons.price_change,
-                        color: Colors.blueGrey[400],
-                      ),
-                      itemLabel: 'Conversor',
-                    ),
-                    BottomBarItem(
-                      inActiveItem: const Icon(
-                        Icons.home,
-                        color: Colors.white,
-                      ),
-                      activeItem: Icon(
-                        Icons.home,
-                        color: Colors.blueGrey[400],
-                      ),
-                      itemLabel: 'Home',
-                    ),
-                    BottomBarItem(
-                      inActiveItem: const Icon(
-                        Icons.wallet,
-                        color: Colors.white,
-                      ),
-                      activeItem: Icon(
-                        Icons.wallet,
-                        color: Colors.blueGrey[400],
-                      ),
-                      itemLabel: 'Carteira',
-                    ),
-                  ],
-                  onTap: (index) {},
-                  kIconSize: 24,
-                ),
-              ),
+              StyledBottomNavigationBar(notchBottomBarController: notchBottomBarController),
             ],
           );
         },

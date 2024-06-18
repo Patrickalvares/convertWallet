@@ -28,4 +28,8 @@ extension BuildContextExtension on BuildContext {
   T get<T extends Object>() {
     return Modular.get<T>();
   }
+
+  Future<Object?> pushreplacement(String routeName, {Object? params}) {
+    return Modular.to.pushReplacementNamed(routeName, arguments: params);
+  }
 }
