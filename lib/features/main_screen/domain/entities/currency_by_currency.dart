@@ -22,6 +22,24 @@ class CurrencyByCurrency {
     }
   }
 
+  factory CurrencyByCurrency.fromMap(Map<String, dynamic> map) {
+    return CurrencyByCurrency(
+      code: map['code'],
+      standardByTargetValue: map['standardByTargetValue'],
+      targetByStandardRate: map['targetByStandardRate'],
+      targetCurrency: Currency.fromCode(map['targetCurrencyCode'])!,
+    );
+  }
+
+  Map<String, Object> toMap() {
+    return {
+      'code': code,
+      'standardByTargetValue': standardByTargetValue,
+      'targetByStandardRate': targetByStandardRate,
+      'targetCurrencyCode': targetCurrency.code,
+    };
+  }
+
   CurrencyByCurrency copyWith({
     String? code,
     double? standardByTargetValue,

@@ -1,5 +1,6 @@
 import '../../../../core/domain/entities/currencys.dart';
 import '../../../../utils/helpers/base_controller.dart';
+import '../../../../utils/helpers/database_helper.dart';
 import '../../data/repository/main_screen_repository.dart';
 import '../../domain/entities/currency_by_currency.dart';
 
@@ -10,8 +11,10 @@ class MainScreenController extends BaseController {
   List<CurrencyByCurrency> currencieByCurrencysFiltred = [];
   bool getCurrencyValuesLoading = false;
   Currency selectedCurrency = Currency.BRL;
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
-  void ininialized() {
+  Future<void> initialized() async {
+    currencieByCurrencys = await _dbHelper.getCurrencyByCurrencies();
     currencieByCurrencysFiltred = currencieByCurrencys;
     update();
   }
@@ -24,8 +27,11 @@ class MainScreenController extends BaseController {
         .getMainScreenData(
       params: generateCurrencyCombinations(selectedCurrency),
     )
-        .then((value) {
+        .then((value) async {
       currencieByCurrencys = value;
+      for (final currency in value) {
+        await _dbHelper.insertCurrencyByCurrency(currency);
+      }
     }).catchError((error) {});
 
     getCurrencyValuesLoading = true;
@@ -52,7 +58,7 @@ class MainScreenController extends BaseController {
             final bool nomeMatches = element.code.toLowerCase().contains(value.toLowerCase()) || element.targetCurrency.name.toLowerCase().contains(value.toLowerCase());
             return nomeMatches;
           })
-          .map((imovel) => imovel.copyWith())
+          .map((currency) => currency.copyWith())
           .toList();
     }
     update();

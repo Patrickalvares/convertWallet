@@ -26,7 +26,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await widget.controller.getCurrencyValues();
-      widget.controller.ininialized();
+      widget.controller.initialized();
     });
   }
 
@@ -95,7 +95,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5, left: 16, right: 16),
+                    padding: const EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 5),
                     child: TextFormField(
                       controller: buscaController,
                       autofillHints: ['Buscar por moeda'],
