@@ -119,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
                               }
                               if (index == widget.controller.currencieByCurrencysFiltred.length + 1) {
                                 return const SizedBox(
-                                  height: 65,
+                                  height: 95,
                                 );
                               }
                               final currencieByCurrency = widget.controller.currencieByCurrencysFiltred[index - 1];

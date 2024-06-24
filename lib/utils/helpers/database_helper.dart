@@ -57,4 +57,9 @@ class DatabaseHelper {
       return CurrencyByCurrency.fromMap(maps[i]);
     });
   }
+
+  Future<void> clearCurrencyByCurrencies() async {
+    final db = await database;
+    await db.delete('currency_by_currency');
+  }
 }

@@ -28,6 +28,7 @@ class MainScreenController extends BaseController {
       params: generateCurrencyCombinations(selectedCurrency),
     )
         .then((value) async {
+      await _dbHelper.clearCurrencyByCurrencies();
       currencieByCurrencys = value;
       for (final currency in value) {
         await _dbHelper.insertCurrencyByCurrency(currency);
