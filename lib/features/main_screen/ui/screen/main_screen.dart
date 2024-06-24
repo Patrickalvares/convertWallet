@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -241,6 +243,36 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ],
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 2,
+                      sigmaY: 2,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1000),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0),
+                            Colors.black.withOpacity(0.05),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                      child: const SizedBox(
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               StyledBottomNavigationBar(notchBottomBarController: notchBottomBarController),
             ],
