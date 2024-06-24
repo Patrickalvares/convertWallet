@@ -45,192 +45,57 @@ class _MainScreenState extends State<MainScreen> {
         builder: (context, child) {
           return Stack(
             children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<Currency>(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.blueGrey.shade100,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                            ),
-                            hint: const Text('Selecione uma moeda'),
-                            value: widget.controller.selectedCurrency,
-                            onChanged: (Currency? newValue) {
-                              setState(() {
-                                widget.controller.selectedCurrency = newValue!;
-                              });
-                              widget.controller.getCurrencyValues();
-                              widget.controller.update();
-                            },
-                            items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
-                              return DropdownMenuItem<Currency>(
-                                value: currency,
-                                child: Text(
-                                  '${currency.flagEmoji} ${currency.name} (${currency.code})',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.currency_exchange_sharp),
-                          color: Colors.blueGrey.shade700,
-                          iconSize: 30,
-                          onPressed: () {
-                            setState(() {
-                              isTargetByStandardRate = !isTargetByStandardRate;
-                            });
-                            widget.controller.update();
-                          },
-                        ),
-                      ],
+              Positioned.fill(
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Container(
+                      color: Colors.transparent,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 5),
-                    child: TextFormField(
-                      controller: buscaController,
-                      autofillHints: ['Buscar por moeda'],
-                      onChanged: widget.controller.filtrarCurrencieByCurrencys,
-                      onSaved: (value) {
-                        if (value != null) {
-                          widget.controller.filtrarCurrencieByCurrencys(value);
-                          FocusScope.of(context).unfocus();
-                        }
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Buscar por moeda',
-                        filled: true,
-                        fillColor: Colors.blueGrey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Visibility(
-                      replacement: ListView.builder(
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return Shimmer(
-                            color: Colors.blueGrey.shade200,
-                            child: Card(
-                              color: Colors.blueGrey.shade100,
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              child: const ListTile(
-                                leading: Text(
-                                  '',
-                                  style: TextStyle(fontSize: 24),
-                                ),
-                                title: Text(
-                                  '',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '',
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                trailing: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      visible: !(widget.controller.currencieByCurrencys.isEmpty || !widget.controller.getCurrencyValuesLoading),
-                      child: RefreshIndicator(
-                        strokeWidth: 3,
-                        color: Colors.blueGrey.shade700,
-                        onRefresh: () => widget.controller.getCurrencyValues(),
-                        child: ListView.builder(
-                          itemCount: widget.controller.currencieByCurrencysFiltred.length + 1, // Incrementa o itemCount
+                ),
+              ),
+              Positioned.fill(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Visibility(
+                        replacement: ListView.builder(
+                          itemCount: 10,
                           itemBuilder: (context, index) {
-                            if (index == widget.controller.currencieByCurrencysFiltred.length) {
+                            if (index == 0) {
                               return const SizedBox(
-                                height: 100,
+                                height: 130,
                               );
                             }
-
-                            final currencieByCurrency = widget.controller.currencieByCurrencysFiltred[index];
-                            return Card(
-                              color: Colors.blueGrey.shade100,
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              child: Visibility(
-                                visible: isTargetByStandardRate,
-                                replacement: ListTile(
+                            return Shimmer(
+                              color: Colors.blueGrey.shade200,
+                              child: Card(
+                                color: Colors.blueGrey.shade100,
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                child: const ListTile(
                                   leading: Text(
-                                    currencieByCurrency.targetCurrency.flagEmoji,
-                                    style: const TextStyle(fontSize: 24),
+                                    '',
+                                    style: TextStyle(fontSize: 24),
                                   ),
                                   title: Text(
-                                    '${currencieByCurrency.code}/${widget.controller.selectedCurrency.code}',
-                                    style: const TextStyle(
+                                    '',
+                                    style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
                                   ),
                                   subtitle: Text(
-                                    '${currencieByCurrency.targetCurrency.name} / ${widget.controller.selectedCurrency.name}',
-                                    style: const TextStyle(fontSize: 12),
+                                    '',
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                   trailing: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        widget.controller.selectedCurrency.sifra + currencieByCurrency.targetByStandardRate.toStringAsFixed(2).replaceAll('.', ','),
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                child: ListTile(
-                                  leading: Text(
-                                    currencieByCurrency.targetCurrency.flagEmoji,
-                                    style: const TextStyle(fontSize: 24),
-                                  ),
-                                  title: Text(
-                                    '${widget.controller.selectedCurrency.code}/${currencieByCurrency.code}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '${widget.controller.selectedCurrency.name} / ${currencieByCurrency.targetCurrency.name}',
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                  trailing: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        currencieByCurrency.targetCurrency.sifra + currencieByCurrency.standardByTargetValue.toStringAsFixed(2).replaceAll('.', ','),
-                                        style: const TextStyle(fontSize: 18),
+                                        '',
+                                        style: TextStyle(fontSize: 18),
                                       ),
                                     ],
                                   ),
@@ -239,10 +104,197 @@ class _MainScreenState extends State<MainScreen> {
                             );
                           },
                         ),
+                        visible: !(widget.controller.currencieByCurrencys.isEmpty || !widget.controller.getCurrencyValuesLoading),
+                        child: RefreshIndicator(
+                          strokeWidth: 3,
+                          color: Colors.blueGrey.shade700,
+                          onRefresh: () => widget.controller.getCurrencyValues(),
+                          child: ListView.builder(
+                            itemCount: widget.controller.currencieByCurrencysFiltred.length + 2,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return const SizedBox(
+                                  height: 130,
+                                );
+                              }
+                              if (index == widget.controller.currencieByCurrencysFiltred.length + 1) {
+                                return const SizedBox(
+                                  height: 65,
+                                );
+                              }
+                              final currencieByCurrency = widget.controller.currencieByCurrencysFiltred[index - 1];
+                              return Card(
+                                color: Colors.blueGrey.shade100,
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                child: Visibility(
+                                  visible: isTargetByStandardRate,
+                                  replacement: ListTile(
+                                    leading: Text(
+                                      currencieByCurrency.targetCurrency.flagEmoji,
+                                      style: const TextStyle(fontSize: 24),
+                                    ),
+                                    title: Text(
+                                      '${currencieByCurrency.code}/${widget.controller.selectedCurrency.code}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '${currencieByCurrency.targetCurrency.name} / ${widget.controller.selectedCurrency.name}',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                    trailing: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          widget.controller.selectedCurrency.sifra + currencieByCurrency.targetByStandardRate.toStringAsFixed(2).replaceAll('.', ','),
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    leading: Text(
+                                      currencieByCurrency.targetCurrency.flagEmoji,
+                                      style: const TextStyle(fontSize: 24),
+                                    ),
+                                    title: Text(
+                                      '${widget.controller.selectedCurrency.code}/${currencieByCurrency.code}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '${widget.controller.selectedCurrency.name} / ${currencieByCurrency.targetCurrency.name}',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                    trailing: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          currencieByCurrency.targetCurrency.sifra + currencieByCurrency.standardByTargetValue.toStringAsFixed(2).replaceAll('.', ','),
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 2,
+                      sigmaY: 2,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1000),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0),
+                            Colors.black.withOpacity(0.05),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButtonFormField<Currency>(
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.blueGrey[400],
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(25),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                    ),
+                                    hint: const Text('Selecione uma moeda'),
+                                    value: widget.controller.selectedCurrency,
+                                    onChanged: (Currency? newValue) {
+                                      setState(() {
+                                        widget.controller.selectedCurrency = newValue!;
+                                      });
+                                      widget.controller.getCurrencyValues();
+                                      widget.controller.update();
+                                    },
+                                    items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                                      return DropdownMenuItem<Currency>(
+                                        value: currency,
+                                        child: Text(
+                                          '${currency.flagEmoji} ${currency.name} (${currency.code})',
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.currency_exchange_sharp),
+                                  color: Colors.blueGrey.shade700,
+                                  iconSize: 30,
+                                  onPressed: () {
+                                    setState(() {
+                                      isTargetByStandardRate = !isTargetByStandardRate;
+                                    });
+                                    widget.controller.update();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 16, right: 16),
+                            child: TextFormField(
+                              controller: buscaController,
+                              autofillHints: ['Buscar por moeda'],
+                              onChanged: widget.controller.filtrarCurrencieByCurrencys,
+                              onSaved: (value) {
+                                if (value != null) {
+                                  widget.controller.filtrarCurrencieByCurrencys(value);
+                                  FocusScope.of(context).unfocus();
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Buscar por moeda',
+                                filled: true,
+                                fillColor: Colors.blueGrey[400],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
               Positioned(
                 bottom: 0,
