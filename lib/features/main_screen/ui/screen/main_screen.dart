@@ -234,6 +234,10 @@ class _MainScreenState extends State<MainScreen> {
                                     ),
                                     hint: const Text('Selecione uma moeda'),
                                     value: widget.controller.selectedCurrency,
+                                    style: const TextStyle(color: Colors.white),
+                                    iconDisabledColor: Colors.white,
+                                    iconEnabledColor: Colors.white,
+                                    dropdownColor: Colors.blueGrey[400],
                                     onChanged: (Currency? newValue) {
                                       setState(() {
                                         widget.controller.selectedCurrency = newValue!;
@@ -252,16 +256,22 @@ class _MainScreenState extends State<MainScreen> {
                                     }).toList(),
                                   ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.currency_exchange_sharp),
-                                  color: Colors.blueGrey.shade700,
-                                  iconSize: 30,
-                                  onPressed: () {
-                                    setState(() {
-                                      isTargetByStandardRate = !isTargetByStandardRate;
-                                    });
-                                    widget.controller.update();
-                                  },
+                                const SizedBox(width: 5),
+                                Container(
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(1000), color: Colors.blueGrey[400]),
+                                  height: 50,
+                                  width: 50,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.currency_exchange_sharp),
+                                    color: Colors.white,
+                                    iconSize: 25,
+                                    onPressed: () {
+                                      setState(() {
+                                        isTargetByStandardRate = !isTargetByStandardRate;
+                                      });
+                                      widget.controller.update();
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -269,6 +279,7 @@ class _MainScreenState extends State<MainScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 16, right: 16),
                             child: TextFormField(
+                              style: const TextStyle(color: Colors.white),
                               controller: buscaController,
                               autofillHints: ['Buscar por moeda'],
                               onChanged: widget.controller.filtrarCurrencieByCurrencys,
@@ -279,6 +290,8 @@ class _MainScreenState extends State<MainScreen> {
                                 }
                               },
                               decoration: InputDecoration(
+                                labelStyle: const TextStyle(color: Colors.white),
+                                hintStyle: const TextStyle(color: Colors.white),
                                 hintText: 'Buscar por moeda',
                                 filled: true,
                                 fillColor: Colors.blueGrey[400],

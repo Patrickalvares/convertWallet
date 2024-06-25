@@ -39,7 +39,10 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
               Icons.price_change,
               color: Colors.blueGrey[400],
             ),
-            itemLabel: 'Conversor',
+            itemLabelWidget: const Text(
+              'Conversor',
+              style: TextStyle(fontSize: 12.5, color: Colors.white),
+            ),
           ),
           BottomBarItem(
             inActiveItem: const Icon(
@@ -50,7 +53,10 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
               Icons.home,
               color: Colors.blueGrey[400],
             ),
-            itemLabel: 'Home',
+            itemLabelWidget: const Text(
+              'Cotações',
+              style: TextStyle(fontSize: 12.5, color: Colors.white),
+            ),
           ),
           BottomBarItem(
             inActiveItem: const Icon(
@@ -61,7 +67,10 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
               Icons.wallet,
               color: Colors.blueGrey[400],
             ),
-            itemLabel: 'Carteira',
+            itemLabelWidget: const Text(
+              'Carteira',
+              style: TextStyle(fontSize: 12.5, color: Colors.white),
+            ),
           ),
         ],
         onTap: (index) {
