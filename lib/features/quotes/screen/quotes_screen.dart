@@ -4,15 +4,15 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../../../../core/common_widgets/app_bar.dart';
-import '../../../../core/common_widgets/bottom_navigation_bar.dart';
-import '../../../../core/domain/entities/currencys.dart';
-import '../controller/main_screen_controller.dart';
+import '../../../core/common_widgets/app_bar.dart';
+import '../../../core/common_widgets/bottom_navigation_bar.dart';
+import '../../../core/domain/entities/currencys.dart';
+import '../controller/quotes_controller.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({required this.controller, super.key});
 
-  final MainScreenController controller;
+  final QuotesController controller;
 
   @override
   State<MainScreen> createState() => _MainScreenState();

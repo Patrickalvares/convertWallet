@@ -1,12 +1,12 @@
-import '../../../../core/helpers/exception/aplication_exception.dart';
-import '../../domain/entities/currency_by_currency.dart';
+import '../helpers/exception/aplication_exception.dart';
+import '../entities/currency_by_currency.dart';
 import '../datasource/main_screen_datasource.dart';
 
-class MainScreenRepository {
-  MainScreenRepository({required this.remoteDataSource});
-  final MainScreenDatasource remoteDataSource;
+class CurrencyRepository {
+  CurrencyRepository({required this.remoteDataSource});
+  final CurrencyDatasource remoteDataSource;
 
-  Future<List<CurrencyByCurrency>> getMainScreenData({
+  Future<List<CurrencyByCurrency>> obterCurrencyByCurrency({
     required String params,
   }) async {
     try {

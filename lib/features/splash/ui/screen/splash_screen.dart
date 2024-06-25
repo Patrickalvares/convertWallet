@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await dotenv.load(fileName: 'keys.env');
       Future.delayed(
         const Duration(seconds: 2),
-        () => context.navigate(AppRoutes.mainScreen.path),
+        () => context.navigate(AppRoutes.quotes.path),
       );
     });
   }

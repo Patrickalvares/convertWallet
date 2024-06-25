@@ -1,6 +1,6 @@
 enum AppRoutes {
   splash('/'),
-  mainScreen('/main_screen'),
+  quotes('/quotes'),
   conversor('/conversor'),
   wallet('/wallet');
 

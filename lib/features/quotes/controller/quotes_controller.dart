@@ -1,20 +1,23 @@
-import '../../../../core/domain/entities/currencys.dart';
-import '../../../../utils/helpers/base_controller.dart';
-import '../../../../utils/helpers/database_helper.dart';
-import '../../data/repository/main_screen_repository.dart';
-import '../../domain/entities/currency_by_currency.dart';
+import '../../../core/domain/entities/currencys.dart';
+import '../../../core/entities/currency_by_currency.dart';
+import '../../../core/repository/main_screen_repository.dart';
+import '../../../utils/helpers/base_controller.dart';
+import '../../../utils/helpers/database_helper.dart';
 
-class MainScreenController extends BaseController {
-  MainScreenController({required this.repository});
-  final MainScreenRepository repository;
+class QuotesController extends BaseController {
+  QuotesController({
+    required this.repository,
+    required this.dbHelper,
+  });
+  final CurrencyRepository repository;
   List<CurrencyByCurrency> currencieByCurrencys = [];
   List<CurrencyByCurrency> currencieByCurrencysFiltred = [];
   bool getCurrencyValuesLoading = false;
   Currency selectedCurrency = Currency.BRL;
-  final DatabaseHelper _dbHelper = DatabaseHelper();
+  final DatabaseHelper dbHelper;
 
   Future<void> initialized() async {
-    currencieByCurrencys = await _dbHelper.getCurrencyByCurrencies();
+    currencieByCurrencys = await dbHelper.getCurrencyByCurrencies();
     currencieByCurrencysFiltred = currencieByCurrencys;
     update();
   }
@@ -24,14 +27,14 @@ class MainScreenController extends BaseController {
     update();
 
     await repository
-        .getMainScreenData(
+        .obterCurrencyByCurrency(
       params: generateCurrencyCombinations(selectedCurrency),
     )
         .then((value) async {
-      await _dbHelper.clearCurrencyByCurrencies();
+      await dbHelper.clearCurrencyByCurrencies();
       currencieByCurrencys = value;
       for (final currency in value) {
-        await _dbHelper.insertCurrencyByCurrency(currency);
+        await dbHelper.insertCurrencyByCurrency(currency);
       }
     }).catchError((error) {});
 

@@ -1,16 +1,15 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import '../../../../core/data/rest/http_interface.dart';
-import '../../../../core/helpers/exception/aplication_exception.dart';
+import '../data/rest/http_interface.dart';
+import '../helpers/exception/aplication_exception.dart';
 
-class MainScreenDatasource {
-  MainScreenDatasource({required this.http});
+class CurrencyDatasource {
+  CurrencyDatasource({required this.http});
   final IHttp http;
 
   Future<dynamic> obterCurrencyByCurrency({
     required String endpoint,
   }) async {
-    
     final String apiKey = dotenv.env['API_KEY'] ?? 'default_api_key';
     try {
       final response = await http.get(

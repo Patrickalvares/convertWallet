@@ -1,4 +1,4 @@
-import '../../../../core/domain/entities/currencys.dart';
+import '../domain/entities/currencys.dart';
 
 class CurrencyByCurrency {
   CurrencyByCurrency({
