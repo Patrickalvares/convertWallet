@@ -13,10 +13,10 @@ class AppModule extends Module {
       ];
   @override
   void routes(RouteManager r) {
-    r.module(AppRoutes.splash.path, module: SplashModule());
-    r.module(AppRoutes.quotes.path, module: MainScreenModule());
-    r.module(AppRoutes.conversor.path, module: ConversorModule());
-    
+    r.module(AppRoutes.splash.path, module: SplashModule(), transition: TransitionType.fadeIn);
+    r.module(AppRoutes.quotes.path, module: MainScreenModule(), transition: TransitionType.fadeIn);
+    r.module(AppRoutes.conversor.path, module: ConversorModule(), transition: TransitionType.fadeIn);
+
     super.routes(r);
   }
 }
