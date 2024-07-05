@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/common_widgets/app_bar.dart';
 import '../../../core/common_widgets/bottom_navigation_bar.dart';
+import '../../../core/data/global.dart';
 import '../../../core/domain/entities/currencys.dart';
 import '../controller/conversor_controller.dart';
 
@@ -66,7 +67,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                                   'Selecione uma moeda',
                                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
-                                value: widget.controller.selectedStandartCurrency,
+                                value: Global.instance.selectedStandartCurrency,
                                 style: const TextStyle(color: Colors.white),
                                 iconDisabledColor: Colors.white,
                                 iconEnabledColor: Colors.white,

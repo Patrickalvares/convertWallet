@@ -1,3 +1,4 @@
+import '../../../core/data/global.dart';
 import '../../../core/domain/entities/currencys.dart';
 import '../../../core/entities/currency_by_currency.dart';
 import '../../../core/repository/main_screen_repository.dart';
@@ -10,16 +11,16 @@ class QuotesController extends BaseController {
     required this.dbHelper,
   });
   final CurrencyRepository repository;
-  List<CurrencyByCurrency> currencieByCurrencys = [];
+
   List<CurrencyByCurrency> currencieByCurrencysFiltred = [];
   bool getCurrencyValuesLoading = false;
-  Currency selectedCurrency = Currency.BRL;
+
   final DatabaseHelper dbHelper;
 
   Future<void> initialized() async {
     await _loadSelectedCurrency();
-    currencieByCurrencys = await dbHelper.getCurrencyByCurrencies();
-    currencieByCurrencysFiltred = currencieByCurrencys;
+    Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
+    currencieByCurrencysFiltred = Global.instance.currencies;
     update();
   }
 
@@ -29,11 +30,11 @@ class QuotesController extends BaseController {
 
     await repository
         .obterCurrencyByCurrency(
-      params: generateCurrencyCombinations(selectedCurrency),
+      params: generateCurrencyCombinations(Global.instance.selectedStandartCurrency),
     )
         .then((value) async {
       await dbHelper.clearCurrencyByCurrencies();
-      currencieByCurrencys = value;
+      Global.instance.currencies = value;
       for (final currency in value) {
         await dbHelper.insertCurrencyByCurrency(currency);
       }
@@ -56,9 +57,9 @@ class QuotesController extends BaseController {
 
   Future<void> filtrarCurrencieByCurrencys(String value) async {
     if (value.trim().isEmpty) {
-      currencieByCurrencysFiltred = currencieByCurrencys;
+      currencieByCurrencysFiltred = Global.instance.currencies;
     } else {
-      currencieByCurrencysFiltred = currencieByCurrencys
+      currencieByCurrencysFiltred = Global.instance.currencies
           .where((element) {
             final bool nomeMatches = element.code.toLowerCase().contains(value.toLowerCase()) || element.targetCurrency.name.toLowerCase().contains(value.toLowerCase());
             return nomeMatches;
@@ -70,7 +71,7 @@ class QuotesController extends BaseController {
   }
 
   Future<void> changeCurrency(Currency newCurrency) async {
-    selectedCurrency = newCurrency;
+    Global.instance.selectedStandartCurrency = newCurrency;
     await dbHelper.saveSelectedCurrency(newCurrency);
     update();
   }
@@ -78,7 +79,7 @@ class QuotesController extends BaseController {
   Future<void> _loadSelectedCurrency() async {
     final currency = await dbHelper.getSelectedCurrency();
     if (currency != null) {
-      selectedCurrency = currency;
+      Global.instance.selectedStandartCurrency = currency;
     }
   }
 }

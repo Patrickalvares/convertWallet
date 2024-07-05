@@ -6,6 +6,7 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../core/common_widgets/app_bar.dart';
 import '../../../core/common_widgets/bottom_navigation_bar.dart';
+import '../../../core/data/global.dart';
 import '../../../core/domain/entities/currencys.dart';
 import '../controller/quotes_controller.dart';
 
@@ -104,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
                             );
                           },
                         ),
-                        visible: !(widget.controller.currencieByCurrencys.isEmpty || !widget.controller.getCurrencyValuesLoading),
+                        visible: !(Global.instance.currencies.isEmpty || !widget.controller.getCurrencyValuesLoading),
                         child: RefreshIndicator(
                           strokeWidth: 3,
                           color: Colors.blueGrey.shade700,
@@ -134,14 +135,14 @@ class _MainScreenState extends State<MainScreen> {
                                       style: const TextStyle(fontSize: 24),
                                     ),
                                     title: Text(
-                                      '${currencieByCurrency.code}/${widget.controller.selectedCurrency.code}',
+                                      '${currencieByCurrency.code}/${Global.instance.selectedStandartCurrency.code}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
                                     ),
                                     subtitle: Text(
-                                      '${currencieByCurrency.targetCurrency.name} / ${widget.controller.selectedCurrency.name}',
+                                      '${currencieByCurrency.targetCurrency.name} / ${Global.instance.selectedStandartCurrency.name}',
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                     trailing: Column(
@@ -149,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          widget.controller.selectedCurrency.sifra + currencieByCurrency.targetByStandardRate.toStringAsFixed(2).replaceAll('.', ','),
+                                          Global.instance.selectedStandartCurrency.sifra + currencieByCurrency.targetByStandardRate.toStringAsFixed(2).replaceAll('.', ','),
                                           style: const TextStyle(fontSize: 18),
                                         ),
                                       ],
@@ -161,14 +162,14 @@ class _MainScreenState extends State<MainScreen> {
                                       style: const TextStyle(fontSize: 24),
                                     ),
                                     title: Text(
-                                      '${widget.controller.selectedCurrency.code}/${currencieByCurrency.code}',
+                                      '${Global.instance.selectedStandartCurrency.code}/${currencieByCurrency.code}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
                                     ),
                                     subtitle: Text(
-                                      '${widget.controller.selectedCurrency.name} / ${currencieByCurrency.targetCurrency.name}',
+                                      '${Global.instance.selectedStandartCurrency.name} / ${currencieByCurrency.targetCurrency.name}',
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                     trailing: Column(
@@ -233,7 +234,7 @@ class _MainScreenState extends State<MainScreen> {
                                       contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                                     ),
                                     hint: const Text('Selecione uma moeda'),
-                                    value: widget.controller.selectedCurrency,
+                                    value: Global.instance.selectedStandartCurrency,
                                     style: const TextStyle(color: Colors.white),
                                     iconDisabledColor: Colors.white,
                                     iconEnabledColor: Colors.white,

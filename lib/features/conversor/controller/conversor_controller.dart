@@ -1,5 +1,5 @@
+import '../../../core/data/global.dart';
 import '../../../core/domain/entities/currencys.dart';
-import '../../../core/entities/currency_by_currency.dart';
 import '../../../core/repository/main_screen_repository.dart';
 import '../../../utils/helpers/base_controller.dart';
 import '../../../utils/helpers/database_helper.dart';
@@ -11,20 +11,20 @@ class ConversorController extends BaseController {
   });
 
   final CurrencyRepository repository;
-  List<CurrencyByCurrency> currencies = [];
+
   final DatabaseHelper dbHelper;
 
-  Currency? selectedStandartCurrency;
   Currency? selectedTargetCurrency;
   double? convertedValue;
 
   Future<void> initialize() async {
-    currencies = await dbHelper.getCurrencyByCurrencies();
+    _loadSelectedCurrency();
+    Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
     update();
   }
 
   void setSourceCurrency(Currency? currency) {
-    selectedStandartCurrency = currency;
+    Global.instance.selectedStandartCurrency = currency!;
     update();
   }
 
@@ -34,11 +34,18 @@ class ConversorController extends BaseController {
   }
 
   Future<void> convert(double amount) async {
-    if (selectedStandartCurrency == null || selectedTargetCurrency == null) {
+    if (selectedTargetCurrency == null) {
       return;
     }
 
     convertedValue = 2;
     update();
+  }
+
+  Future<void> _loadSelectedCurrency() async {
+    final currency = await dbHelper.getSelectedCurrency();
+    if (currency != null) {
+      Global.instance.selectedStandartCurrency = currency;
+    }
   }
 }
