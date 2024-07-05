@@ -14,7 +14,7 @@ class ConversorController extends BaseController {
   List<CurrencyByCurrency> currencies = [];
   final DatabaseHelper dbHelper;
 
-  Currency? selectedSourceCurrency;
+  Currency? selectedStandartCurrency;
   Currency? selectedTargetCurrency;
   double? convertedValue;
 
@@ -24,7 +24,7 @@ class ConversorController extends BaseController {
   }
 
   void setSourceCurrency(Currency? currency) {
-    selectedSourceCurrency = currency;
+    selectedStandartCurrency = currency;
     update();
   }
 
@@ -34,11 +34,9 @@ class ConversorController extends BaseController {
   }
 
   Future<void> convert(double amount) async {
-    if (selectedSourceCurrency == null || selectedTargetCurrency == null) {
+    if (selectedStandartCurrency == null || selectedTargetCurrency == null) {
       return;
     }
- 
-    
 
     convertedValue = 2;
     update();

@@ -32,6 +32,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey.shade50,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(55),
         child: SimpleAppBarWidget(),
@@ -46,34 +47,87 @@ class _ConversorScreenState extends State<ConversorScreen> {
                 builder: (context, _) {
                   return Column(
                     children: [
-                      DropdownButtonFormField<Currency>(
-                        decoration: const InputDecoration(
-                          labelText: 'Moeda de origem',
-                          border: OutlineInputBorder(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<Currency>(
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.blueGrey[400],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                ),
+                                hint: const Text(
+                                  'Selecione uma moeda',
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                                value: widget.controller.selectedStandartCurrency,
+                                style: const TextStyle(color: Colors.white),
+                                iconDisabledColor: Colors.white,
+                                iconEnabledColor: Colors.white,
+                                dropdownColor: Colors.blueGrey[400],
+                                onChanged: widget.controller.setSourceCurrency,
+                                items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                                  return DropdownMenuItem<Currency>(
+                                    value: currency,
+                                    child: Text(
+                                      '${currency.flagEmoji} ${currency.name} (${currency.code})',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
                         ),
-                        value: widget.controller.selectedSourceCurrency,
-                        onChanged: widget.controller.setSourceCurrency,
-                        items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
-                          return DropdownMenuItem<Currency>(
-                            value: currency,
-                            child: Text('${currency.flagEmoji} ${currency.name} (${currency.code})'),
-                          );
-                        }).toList(),
                       ),
                       const SizedBox(height: 16),
-                      DropdownButtonFormField<Currency>(
-                        decoration: const InputDecoration(
-                          labelText: 'Moeda de destino',
-                          border: OutlineInputBorder(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<Currency>(
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.blueGrey[400],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                ),
+                                hint: const Text(
+                                  'Selecione uma moeda',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                value: widget.controller.selectedTargetCurrency,
+                                style: const TextStyle(color: Colors.white),
+                                iconDisabledColor: Colors.white,
+                                iconEnabledColor: Colors.white,
+                                dropdownColor: Colors.blueGrey[400],
+                                onChanged: widget.controller.setTargetCurrency,
+                                items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                                  return DropdownMenuItem<Currency>(
+                                    value: currency,
+                                    child: Text(
+                                      '${currency.flagEmoji} ${currency.name} (${currency.code})',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
                         ),
-                        value: widget.controller.selectedTargetCurrency,
-                        onChanged: widget.controller.setTargetCurrency,
-                        items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
-                          return DropdownMenuItem<Currency>(
-                            value: currency,
-                            child: Text('${currency.flagEmoji} ${currency.name} (${currency.code})'),
-                          );
-                        }).toList(),
                       ),
                       const SizedBox(height: 16),
                       TextField(

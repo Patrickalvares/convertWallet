@@ -240,7 +240,7 @@ class _MainScreenState extends State<MainScreen> {
                                     dropdownColor: Colors.blueGrey[400],
                                     onChanged: (Currency? newValue) {
                                       setState(() {
-                                        widget.controller.selectedCurrency = newValue!;
+                                        widget.controller.changeCurrency(newValue!);
                                       });
                                       widget.controller.getCurrencyValues();
                                       widget.controller.update();

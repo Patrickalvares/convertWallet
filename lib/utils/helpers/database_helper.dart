@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../core/domain/entities/currencys.dart';
 import '../../core/entities/currency_by_currency.dart';
 
 class DatabaseHelper {
@@ -31,14 +32,21 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE currency_by_currency(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        code TEXT,
-        standardByTargetValue REAL,
-        targetByStandardRate REAL,
-        targetCurrencyCode TEXT
-      )
-    ''');
+    CREATE TABLE currency_by_currency(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT,
+      standardByTargetValue REAL,
+      targetByStandardRate REAL,
+      targetCurrencyCode TEXT
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE selected_currency(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      currency_code TEXT
+    )
+  ''');
   }
 
   Future<void> insertCurrencyByCurrency(CurrencyByCurrency currency) async {
@@ -61,5 +69,24 @@ class DatabaseHelper {
   Future<void> clearCurrencyByCurrencies() async {
     final db = await database;
     await db.delete('currency_by_currency');
+  }
+
+  Future<void> saveSelectedCurrency(Currency currency) async {
+    final db = await database;
+    await db.insert(
+      'selected_currency',
+      {'currency_code': currency.code},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<Currency?> getSelectedCurrency() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query('selected_currency');
+    if (result.isNotEmpty) {
+      final currencyCode = result.first['currency_code'] as String;
+      return Currency.values.firstWhere((currency) => currency.code == currencyCode, orElse: () => Currency.BRL);
+    }
+    return null;
   }
 }

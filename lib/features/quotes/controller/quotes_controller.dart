@@ -17,6 +17,7 @@ class QuotesController extends BaseController {
   final DatabaseHelper dbHelper;
 
   Future<void> initialized() async {
+    await _loadSelectedCurrency();
     currencieByCurrencys = await dbHelper.getCurrencyByCurrencies();
     currencieByCurrencysFiltred = currencieByCurrencys;
     update();
@@ -66,5 +67,18 @@ class QuotesController extends BaseController {
           .toList();
     }
     update();
+  }
+
+  Future<void> changeCurrency(Currency newCurrency) async {
+    selectedCurrency = newCurrency;
+    await dbHelper.saveSelectedCurrency(newCurrency);
+    update();
+  }
+
+  Future<void> _loadSelectedCurrency() async {
+    final currency = await dbHelper.getSelectedCurrency();
+    if (currency != null) {
+      selectedCurrency = currency;
+    }
   }
 }
