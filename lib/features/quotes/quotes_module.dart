@@ -1,10 +1,10 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../../core/datasource/main_screen_datasource.dart';
+import '../../core/datasource/currency_datasource.dart';
 import '../../core/module/core_modules.dart';
 import '../../core/repository/main_screen_repository.dart';
-import 'controller/quotes_controller.dart';
-import 'screen/quotes_screen.dart';
+import 'quotes_controller.dart';
+import 'quotes_screen.dart';
 
 class MainScreenModule extends Module {
   @override

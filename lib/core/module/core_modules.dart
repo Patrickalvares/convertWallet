@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../../features/splash/ui/controller/splash_controller.dart';
+import '../../features/splash/splash_controller.dart';
 import '../../utils/helpers/database_helper.dart';
 import '../data/rest/http.dart';
 import '../data/rest/http_interface.dart';

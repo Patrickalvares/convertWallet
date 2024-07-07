@@ -1,6 +1,6 @@
-import '../helpers/exception/aplication_exception.dart';
+import '../../utils/helpers/exception/aplication_exception.dart';
 import '../entities/currency_by_currency.dart';
-import '../datasource/main_screen_datasource.dart';
+import '../datasource/currency_datasource.dart';
 
 class CurrencyRepository {
   CurrencyRepository({required this.remoteDataSource});

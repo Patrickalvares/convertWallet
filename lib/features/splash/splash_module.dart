@@ -1,8 +1,8 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../core/module/core_modules.dart';
-import 'ui/controller/splash_controller.dart';
-import 'ui/screen/splash_screen.dart';
+import 'splash_controller.dart';
+import 'splash_screen.dart';
 
 class SplashModule extends Module {
   @override

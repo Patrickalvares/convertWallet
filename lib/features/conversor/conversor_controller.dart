@@ -1,8 +1,8 @@
-import '../../../core/data/global.dart';
-import '../../../core/domain/entities/currencys.dart';
-import '../../../core/repository/main_screen_repository.dart';
-import '../../../utils/helpers/base_controller.dart';
-import '../../../utils/helpers/database_helper.dart';
+import '../../core/data/singleton/global.dart';
+import '../../core/domain/entities/currencys.dart';
+import '../../core/repository/main_screen_repository.dart';
+import '../../utils/helpers/base_controller.dart';
+import '../../utils/helpers/database_helper.dart';
 
 class ConversorController extends BaseController {
   ConversorController({
