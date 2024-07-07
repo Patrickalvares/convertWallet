@@ -2,7 +2,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../core/datasource/currency_datasource.dart';
 import '../../core/module/core_modules.dart';
-import '../../core/repository/main_screen_repository.dart';
+import '../../core/repository/currency_repository.dart';
 import 'quotes_controller.dart';
 import 'quotes_screen.dart';
 
