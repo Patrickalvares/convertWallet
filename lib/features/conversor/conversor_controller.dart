@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../core/data/singleton/global.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/repository/currency_repository.dart';
@@ -9,7 +11,7 @@ class ConversorController extends BaseController {
     required this.dbHelper,
     required this.repository,
   });
-
+  final TextEditingController outputController = TextEditingController();
   final CurrencyRepository repository;
 
   final DatabaseHelper dbHelper;
@@ -38,7 +40,10 @@ class ConversorController extends BaseController {
       return;
     }
 
-    convertedValue = 2;
+    final targetCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
+
+    outputController.text = (amount * targetCurrency.standardByTargetValue).toStringAsFixed(2);
+
     update();
   }
 
