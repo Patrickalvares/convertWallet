@@ -13,6 +13,7 @@ class ConversorController extends BaseController {
   });
   final TextEditingController outputController = TextEditingController();
   final CurrencyRepository repository;
+  bool getCurrencyValuesLoading = false;
 
   final DatabaseHelper dbHelper;
 
@@ -27,7 +28,7 @@ class ConversorController extends BaseController {
 
   void setSourceCurrency(Currency? currency) {
     Global.instance.selectedStandartCurrency = currency!;
-    update();
+    getCurrencyValues();
   }
 
   void setTargetCurrency(Currency? currency) {
@@ -36,7 +37,9 @@ class ConversorController extends BaseController {
   }
 
   Future<void> convert(double amount) async {
-    if (selectedTargetCurrency == null) {
+    if (selectedTargetCurrency == null || amount == 0) {
+      outputController.text = '';
+      update();
       return;
     }
 
@@ -52,5 +55,36 @@ class ConversorController extends BaseController {
     if (currency != null) {
       Global.instance.selectedStandartCurrency = currency;
     }
+  }
+
+  Future<void> getCurrencyValues() async {
+    getCurrencyValuesLoading = true;
+    update();
+
+    await repository
+        .obterCurrencyByCurrency(
+      params: generateCurrencyCombinations(Global.instance.selectedStandartCurrency),
+    )
+        .then((value) async {
+      await dbHelper.clearCurrencyByCurrencies();
+      Global.instance.currencies = value;
+      for (final currency in value) {
+        await dbHelper.insertCurrencyByCurrency(currency);
+      }
+    }).catchError((error) {});
+
+    getCurrencyValuesLoading = false;
+    update();
+  }
+
+  String generateCurrencyCombinations(Currency selectedCurrency) {
+    final List<String> combinations = [];
+
+    for (final Currency currency in Currency.values) {
+      if (currency != selectedCurrency) {
+        combinations.add('${currency.code}');
+      }
+    }
+    return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
   }
 }
