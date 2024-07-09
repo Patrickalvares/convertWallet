@@ -139,11 +139,12 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             keyboardType: TextInputType.number,
                             style: const TextStyle(color: Colors.white),
                             controller: amountController,
-                            autofillHints: ['Buscar por moeda'],
                             onChanged: (_) {
                               final amount = double.tryParse(amountController.text);
                               if (amount != null) {
                                 widget.controller.convert(amount);
+                              } else {
+                                widget.controller.outputController.clear();
                               }
                             },
                             decoration: InputDecoration(
@@ -165,7 +166,6 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             keyboardType: TextInputType.number,
                             style: const TextStyle(color: Colors.white),
                             controller: widget.controller.outputController,
-                            autofillHints: ['Buscar por moeda'],
                             decoration: InputDecoration(
                               labelStyle: const TextStyle(color: Colors.white),
                               hintStyle: const TextStyle(color: Colors.white),

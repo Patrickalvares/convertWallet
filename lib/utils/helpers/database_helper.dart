@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../core/entities/currencys.dart';
 import '../../core/entities/currency_by_currency.dart';
+import '../../core/entities/currencys.dart';
 
 class DatabaseHelper {
   factory DatabaseHelper() {
@@ -73,6 +73,9 @@ class DatabaseHelper {
 
   Future<void> saveSelectedCurrency(Currency currency) async {
     final db = await database;
+
+    await db.delete('selected_currency');
+
     await db.insert(
       'selected_currency',
       {'currency_code': currency.code},
@@ -85,7 +88,12 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> result = await db.query('selected_currency');
     if (result.isNotEmpty) {
       final currencyCode = result.first['currency_code'] as String;
-      return Currency.values.firstWhere((currency) => currency.code == currencyCode, orElse: () => Currency.BRL);
+      final currency = Currency.fromCode(currencyCode);
+      if (currency != null) {
+        return currency;
+      } else {
+        return Currency.BRL;
+      }
     }
     return null;
   }

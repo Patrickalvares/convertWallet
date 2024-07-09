@@ -240,11 +240,8 @@ class _MainScreenState extends State<MainScreen> {
                                     iconEnabledColor: Colors.white,
                                     dropdownColor: Colors.blueGrey[400],
                                     onChanged: (Currency? newValue) {
-                                      setState(() {
-                                        widget.controller.changeCurrency(newValue!);
-                                      });
+                                      widget.controller.changeCurrency(newValue!);
                                       widget.controller.getCurrencyValues();
-                                      widget.controller.update();
                                     },
                                     items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
                                       return DropdownMenuItem<Currency>(

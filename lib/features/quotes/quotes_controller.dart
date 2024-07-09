@@ -1,6 +1,6 @@
 import '../../core/data/singleton/global.dart';
-import '../../core/entities/currencys.dart';
 import '../../core/entities/currency_by_currency.dart';
+import '../../core/entities/currencys.dart';
 import '../../core/repository/currency_repository.dart';
 import '../../utils/helpers/base_controller.dart';
 import '../../utils/helpers/database_helper.dart';
@@ -16,7 +16,6 @@ class QuotesController extends BaseController {
   bool getCurrencyValuesLoading = false;
 
   final DatabaseHelper dbHelper;
-
   Future<void> initialized() async {
     await _loadSelectedCurrency();
     Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
@@ -80,6 +79,8 @@ class QuotesController extends BaseController {
     final currency = await dbHelper.getSelectedCurrency();
     if (currency != null) {
       Global.instance.selectedStandartCurrency = currency;
+    } else {
+      Global.instance.selectedStandartCurrency = Currency.BRL;
     }
   }
 }

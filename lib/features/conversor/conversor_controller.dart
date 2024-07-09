@@ -38,8 +38,8 @@ class ConversorController extends BaseController {
 
   Future<void> convert(double amount) async {
     if (selectedTargetCurrency == null || amount == 0) {
-      outputController.text = '';
-      update();
+      outputController.clear();
+
       return;
     }
 
@@ -52,9 +52,14 @@ class ConversorController extends BaseController {
 
   Future<void> _loadSelectedCurrency() async {
     final currency = await dbHelper.getSelectedCurrency();
-    if (currency != null) {
-      Global.instance.selectedStandartCurrency = currency;
+    if (currency == null) return;
+    Global.instance.selectedStandartCurrency = currency;
+    if (currency == Currency.BRL) {
+      selectedTargetCurrency = Currency.USD;
+    } else {
+      selectedTargetCurrency = Currency.BRL;
     }
+    update();
   }
 
   Future<void> getCurrencyValues() async {
