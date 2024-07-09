@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/data/singleton/global.dart';
+import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/repository/currency_repository.dart';
 import '../../utils/helpers/base_controller.dart';
@@ -13,6 +14,7 @@ class ConversorController extends BaseController {
   });
   final TextEditingController outputController = TextEditingController();
   final CurrencyRepository repository;
+  CurrencyByCurrency? targetCurrency;
   bool getCurrencyValuesLoading = false;
 
   final DatabaseHelper dbHelper;
@@ -23,6 +25,7 @@ class ConversorController extends BaseController {
   Future<void> initialize() async {
     _loadSelectedCurrency();
     Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
+    targetCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
     update();
   }
 
@@ -33,6 +36,7 @@ class ConversorController extends BaseController {
 
   void setTargetCurrency(Currency? currency) {
     selectedTargetCurrency = currency;
+    targetCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
     update();
   }
 
@@ -43,9 +47,7 @@ class ConversorController extends BaseController {
       return;
     }
 
-    final targetCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
-
-    outputController.text = (amount * targetCurrency.standardByTargetValue).toStringAsFixed(2);
+    if (targetCurrency != null) outputController.text = "${targetCurrency!.targetCurrency.sifra} ${(amount * targetCurrency!.standardByTargetValue).toStringAsFixed(2).replaceAll('.', ',')}";
 
     update();
   }

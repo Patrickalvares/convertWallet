@@ -169,11 +169,36 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             keyboardType: TextInputType.number,
                             style: const TextStyle(color: Colors.white),
                             controller: amountController,
-                            onChanged: (_) {
-                              final amount = double.tryParse(amountController.text);
-                              if (amount != null) {
-                                widget.controller.convert(amount);
+                            onChanged: (value) {
+                              final filteredValue = value.replaceAll(RegExp(r'[^0-9]'), '');
+                              if (filteredValue.isNotEmpty) {
+                                if (filteredValue.length > 2) {
+                                  final intPart = filteredValue.substring(0, filteredValue.length - 2).replaceAll(RegExp(r'^0+'), '');
+                                  final decPart = filteredValue.substring(filteredValue.length - 2);
+                                  amountController.value = TextEditingValue(
+                                    text: ('$intPart,$decPart'),
+                                    selection: TextSelection.collapsed(offset: '$intPart,$decPart'.length),
+                                  );
+                                } else if (filteredValue.length == 2) {
+                                  amountController.value = TextEditingValue(
+                                    text: '0,$filteredValue',
+                                    selection: TextSelection.collapsed(offset: '0,$filteredValue'.length),
+                                  );
+                                } else {
+                                  amountController.value = TextEditingValue(
+                                    text: '0,0$filteredValue',
+                                    selection: TextSelection.collapsed(offset: '0,0$filteredValue'.length),
+                                  );
+                                }
+                                final amount = double.tryParse(amountController.text.replaceAll(',', '.'));
+                                if (amount != null) {
+                                  widget.controller.convert(amount);
+                                  amountController.text = '${Global.instance.selectedStandartCurrency.sifra} ${amountController.text.replaceAll('.', ',')}';
+                                } else {
+                                  widget.controller.outputController.clear();
+                                }
                               } else {
+                                amountController.clear();
                                 widget.controller.outputController.clear();
                               }
                             },
