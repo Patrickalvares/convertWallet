@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
@@ -21,6 +24,9 @@ class ConversorScreen extends StatefulWidget {
 class _ConversorScreenState extends State<ConversorScreen> {
   final TextEditingController amountController = TextEditingController();
   final NotchBottomBarController notchBottomBarController = NotchBottomBarController();
+  late KeyboardVisibilityController keyboardVisibilityController;
+  late StreamSubscription<bool> keyboardVisibilitySubscription;
+  bool isKeyboardVisible = false;
 
   @override
   void initState() {
@@ -28,6 +34,20 @@ class _ConversorScreenState extends State<ConversorScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.controller.initialize();
     });
+
+    keyboardVisibilityController = KeyboardVisibilityController();
+    keyboardVisibilitySubscription = keyboardVisibilityController.onChange.listen((bool visible) {
+      setState(() {
+        isKeyboardVisible = visible;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    keyboardVisibilitySubscription.cancel();
+    amountController.dispose();
+    super.dispose();
   }
 
   @override
@@ -188,7 +208,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             decoration: InputDecoration(
                               labelStyle: const TextStyle(color: Colors.white),
                               hintStyle: const TextStyle(color: Colors.white),
-                              hintText: 'Resultado da conversão',
+                              hintText: 'Resultado',
                               filled: true,
                               fillColor: Colors.blueGrey[400],
                               border: OutlineInputBorder(
@@ -239,8 +259,11 @@ class _ConversorScreenState extends State<ConversorScreen> {
               ),
             ),
           ),
-          StyledBottomNavigationBar(
-            notchBottomBarController: notchBottomBarController,
+          Visibility(
+            visible: !isKeyboardVisible,
+            child: StyledBottomNavigationBar(
+              notchBottomBarController: notchBottomBarController,
+            ),
           ),
         ],
       ),
