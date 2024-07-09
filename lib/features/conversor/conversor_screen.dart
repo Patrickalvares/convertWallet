@@ -51,90 +51,100 @@ class _ConversorScreenState extends State<ConversorScreen> {
                   builder: (context, _) {
                     return SingleChildScrollView(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 5),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: DropdownButtonFormField<Currency>(
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Colors.blueGrey[400],
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                                    ),
-                                    hint: const Text(
-                                      'Selecione uma moeda',
-                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                    ),
-                                    value: Global.instance.selectedStandartCurrency,
-                                    style: const TextStyle(color: Colors.white),
-                                    iconDisabledColor: Colors.white,
-                                    iconEnabledColor: Colors.white,
-                                    dropdownColor: Colors.blueGrey[400],
-                                    onChanged: widget.controller.setSourceCurrency,
-                                    items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
-                                      return DropdownMenuItem<Currency>(
-                                        value: currency,
-                                        child: Text(
-                                          '${currency.flagEmoji} ${currency.name} (${currency.code})',
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            'Moeda de Origem:',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey.shade700,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 5),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: DropdownButtonFormField<Currency>(
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Colors.blueGrey[400],
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                                    ),
-                                    hint: const Text(
-                                      'Selecione uma moeda',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    value: widget.controller.selectedTargetCurrency,
-                                    style: const TextStyle(color: Colors.white),
-                                    iconDisabledColor: Colors.white,
-                                    iconEnabledColor: Colors.white,
-                                    dropdownColor: Colors.blueGrey[400],
-                                    onChanged: widget.controller.setTargetCurrency,
-                                    items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
-                                      return DropdownMenuItem<Currency>(
-                                        value: currency,
-                                        child: Text(
-                                          '${currency.flagEmoji} ${currency.name} (${currency.code})',
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ],
+                          const SizedBox(height: 5),
+                          DropdownButtonFormField<Currency>(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.blueGrey[400],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                             ),
+                            hint: const Text(
+                              'Selecione uma moeda',
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                            value: Global.instance.selectedStandartCurrency,
+                            style: const TextStyle(color: Colors.white),
+                            iconDisabledColor: Colors.white,
+                            iconEnabledColor: Colors.white,
+                            dropdownColor: Colors.blueGrey[400],
+                            onChanged: widget.controller.setSourceCurrency,
+                            items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                              return DropdownMenuItem<Currency>(
+                                value: currency,
+                                child: Text(
+                                  '${currency.flagEmoji} ${currency.name} (${currency.code})',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              );
+                            }).toList(),
                           ),
                           const SizedBox(height: 16),
+                          Text(
+                            'Moeda de Destino:',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          DropdownButtonFormField<Currency>(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.blueGrey[400],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            ),
+                            hint: const Text(
+                              'Selecione uma moeda',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            value: widget.controller.selectedTargetCurrency,
+                            style: const TextStyle(color: Colors.white),
+                            iconDisabledColor: Colors.white,
+                            iconEnabledColor: Colors.white,
+                            dropdownColor: Colors.blueGrey[400],
+                            onChanged: widget.controller.setTargetCurrency,
+                            items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                              return DropdownMenuItem<Currency>(
+                                value: currency,
+                                child: Text(
+                                  '${currency.flagEmoji} ${currency.name} (${currency.code})',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Valor a ser Convertido:',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
                           TextFormField(
                             keyboardType: TextInputType.number,
                             style: const TextStyle(color: Colors.white),
@@ -150,7 +160,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             decoration: InputDecoration(
                               labelStyle: const TextStyle(color: Colors.white),
                               hintStyle: const TextStyle(color: Colors.white),
-                              hintText: 'Valor a ser convertido',
+                              hintText: 'Digite o valor',
                               filled: true,
                               fillColor: Colors.blueGrey[400],
                               border: OutlineInputBorder(
@@ -161,6 +171,15 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
+                          Text(
+                            'Valor Convertido:',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
                           TextFormField(
                             readOnly: true,
                             keyboardType: TextInputType.number,
@@ -169,7 +188,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             decoration: InputDecoration(
                               labelStyle: const TextStyle(color: Colors.white),
                               hintStyle: const TextStyle(color: Colors.white),
-                              hintText: 'Conversão',
+                              hintText: 'Resultado da conversão',
                               filled: true,
                               fillColor: Colors.blueGrey[400],
                               border: OutlineInputBorder(
@@ -179,22 +198,39 @@ class _ConversorScreenState extends State<ConversorScreen> {
                               contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              final amount = double.tryParse(amountController.text);
-                              if (amount != null) {
-                                widget.controller.convert(amount);
-                              }
-                            },
-                            child: const Text('Converter'),
-                          ),
-                          const SizedBox(height: 16),
-                          if (widget.controller.convertedValue != null)
-                            Text(
-                              'Valor convertido: ${widget.controller.convertedValue.toString()}',
-                              style: const TextStyle(fontSize: 20),
+                          const SizedBox(height: 35),
+                          Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints.tightFor(width: 200),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStateProperty.all(
+                                    Colors.blueGrey[400],
+                                  ),
+                                ),
+                                onPressed: () {
+                                  final amount = double.tryParse(amountController.text);
+                                  if (amount != null) {
+                                    widget.controller.convert(amount);
+                                  }
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.change_circle_outlined, color: Colors.white, size: 35),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        'Converter',
+                                        style: TextStyle(color: Colors.white, fontSize: 20),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
+                          ),
                         ],
                       ),
                     );
