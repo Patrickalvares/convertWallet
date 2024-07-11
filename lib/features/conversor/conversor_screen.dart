@@ -22,7 +22,6 @@ class ConversorScreen extends StatefulWidget {
 }
 
 class _ConversorScreenState extends State<ConversorScreen> {
-  final TextEditingController amountController = TextEditingController();
   final NotchBottomBarController notchBottomBarController = NotchBottomBarController();
   late KeyboardVisibilityController keyboardVisibilityController;
   late StreamSubscription<bool> keyboardVisibilitySubscription;
@@ -45,13 +44,12 @@ class _ConversorScreenState extends State<ConversorScreen> {
   @override
   void dispose() {
     keyboardVisibilitySubscription.cancel();
-    amountController.dispose();
+    widget.controller.amountController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       backgroundColor: Colors.blueGrey.shade50,
       appBar: PreferredSize(
@@ -70,7 +68,13 @@ class _ConversorScreenState extends State<ConversorScreen> {
                   children: [
                     Visibility(
                       visible: !widget.controller.getCurrencyValuesLoading,
-                      replacement: const CircularProgressIndicator(),
+                      replacement: Padding(
+                        padding: const EdgeInsets.only(top: 300),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 10,
+                          color: Colors.blueGrey[400],
+                        ),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -105,7 +109,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                               iconEnabledColor: Colors.white,
                               dropdownColor: Colors.blueGrey[400],
                               onChanged: widget.controller.setSourceCurrency,
-                              items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                              items: Currency.values.where((currency) => currency != widget.controller.selectedTargetCurrency).map<DropdownMenuItem<Currency>>((Currency currency) {
                                 return DropdownMenuItem<Currency>(
                                   value: currency,
                                   child: Text(
@@ -148,7 +152,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                               iconEnabledColor: Colors.white,
                               dropdownColor: Colors.blueGrey[400],
                               onChanged: widget.controller.setTargetCurrency,
-                              items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
+                              items: Currency.values.where((currency) => currency != Global.instance.selectedStandartCurrency).map<DropdownMenuItem<Currency>>((Currency currency) {
                                 return DropdownMenuItem<Currency>(
                                   value: currency,
                                   child: Text(
@@ -171,37 +175,37 @@ class _ConversorScreenState extends State<ConversorScreen> {
                             TextFormField(
                               keyboardType: TextInputType.number,
                               style: const TextStyle(color: Colors.white),
-                              controller: amountController,
+                              controller: widget.controller.amountController,
                               onChanged: (value) {
                                 final filteredValue = value.replaceAll(RegExp(r'[^0-9]'), '');
                                 if (filteredValue.isNotEmpty) {
                                   if (filteredValue.length > 2) {
                                     final intPart = filteredValue.substring(0, filteredValue.length - 2).replaceAll(RegExp(r'^0+'), '');
                                     final decPart = filteredValue.substring(filteredValue.length - 2);
-                                    amountController.value = TextEditingValue(
+                                    widget.controller.amountController.value = TextEditingValue(
                                       text: ('$intPart,$decPart'),
                                       selection: TextSelection.collapsed(offset: '$intPart,$decPart'.length),
                                     );
                                   } else if (filteredValue.length == 2) {
-                                    amountController.value = TextEditingValue(
+                                    widget.controller.amountController.value = TextEditingValue(
                                       text: '0,$filteredValue',
                                       selection: TextSelection.collapsed(offset: '0,$filteredValue'.length),
                                     );
                                   } else {
-                                    amountController.value = TextEditingValue(
+                                    widget.controller.amountController.value = TextEditingValue(
                                       text: '0,0$filteredValue',
                                       selection: TextSelection.collapsed(offset: '0,0$filteredValue'.length),
                                     );
                                   }
-                                  final amount = double.tryParse(amountController.text.replaceAll(',', '.'));
+                                  final amount = double.tryParse(widget.controller.amountController.text.replaceAll(',', '.'));
                                   if (amount != null) {
                                     widget.controller.convert(amount);
-                                    amountController.text = '${Global.instance.selectedStandartCurrency.sifra} ${amountController.text.replaceAll('.', ',')}';
+                                    widget.controller.amountController.text = '${Global.instance.selectedStandartCurrency.sifra} ${widget.controller.amountController.text.replaceAll('.', ',')}';
                                   } else {
                                     widget.controller.outputController.clear();
                                   }
                                 } else {
-                                  amountController.clear();
+                                  widget.controller.amountController.clear();
                                   widget.controller.outputController.clear();
                                 }
                               },
@@ -257,7 +261,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    final amount = double.tryParse(amountController.text);
+                                    final amount = double.tryParse(widget.controller.amountController.text);
                                     if (amount != null) {
                                       widget.controller.convert(amount);
                                     }

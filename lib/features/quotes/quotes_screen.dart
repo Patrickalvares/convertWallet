@@ -106,8 +106,9 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         visible: !(Global.instance.currencies.isEmpty || !widget.controller.getCurrencyValuesLoading),
                         child: RefreshIndicator(
-                          strokeWidth: 3,
-                          color: Colors.blueGrey.shade700,
+                          backgroundColor: Colors.blueGrey.shade700,
+                          edgeOffset: 100,
+                          color: Colors.white,
                           onRefresh: () => widget.controller.getCurrencyValues(),
                           child: ListView.builder(
                             itemCount: widget.controller.currencieByCurrencysFiltred.length + 2,

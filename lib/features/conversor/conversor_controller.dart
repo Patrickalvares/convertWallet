@@ -12,6 +12,7 @@ class ConversorController extends BaseController {
     required this.dbHelper,
     required this.repository,
   });
+  final TextEditingController amountController = TextEditingController();
   final TextEditingController outputController = TextEditingController();
   final CurrencyRepository repository;
   CurrencyByCurrency? targetCurrency;
@@ -31,6 +32,8 @@ class ConversorController extends BaseController {
 
   void setSourceCurrency(Currency? currency) {
     Global.instance.selectedStandartCurrency = currency!;
+    amountController.clear();
+    outputController.clear();
     getCurrencyValues();
   }
 
