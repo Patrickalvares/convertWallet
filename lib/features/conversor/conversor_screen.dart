@@ -34,7 +34,6 @@ class _ConversorScreenState extends State<ConversorScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.controller.initialize();
     });
-
     keyboardVisibilityController = KeyboardVisibilityController();
     keyboardVisibilitySubscription = keyboardVisibilityController.onChange.listen((bool visible) {
       setState(() {

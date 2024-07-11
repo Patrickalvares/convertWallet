@@ -28,7 +28,6 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await widget.controller.getCurrencyValues();
       widget.controller.initialized();
     });
   }

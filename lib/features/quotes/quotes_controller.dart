@@ -18,9 +18,7 @@ class QuotesController extends BaseController {
   final DatabaseHelper dbHelper;
   Future<void> initialized() async {
     await _loadSelectedCurrency();
-    Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
-    currencieByCurrencysFiltred = Global.instance.currencies;
-    update();
+    await getCurrencyValues();
   }
 
   Future<void> getCurrencyValues() async {
@@ -34,10 +32,14 @@ class QuotesController extends BaseController {
         .then((value) async {
       await dbHelper.clearCurrencyByCurrencies();
       Global.instance.currencies = value;
+      currencieByCurrencysFiltred = Global.instance.currencies;
       for (final currency in value) {
         await dbHelper.insertCurrencyByCurrency(currency);
       }
-    }).catchError((error) {});
+    }).catchError((_) async {
+      Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
+      currencieByCurrencysFiltred = Global.instance.currencies;
+    });
 
     getCurrencyValuesLoading = true;
     update();
