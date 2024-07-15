@@ -15,7 +15,7 @@ class ConversorController extends BaseController {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController outputController = TextEditingController();
   final CurrencyRepository repository;
-  CurrencyByCurrency? targetCurrency;
+  CurrencyByCurrency? targetCurrencyByCurrency;
   bool getCurrencyValuesLoading = false;
 
   final DatabaseHelper dbHelper;
@@ -26,20 +26,23 @@ class ConversorController extends BaseController {
   Future<void> initialize() async {
     _loadSelectedCurrency();
     Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
-    targetCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
+    targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
     update();
   }
 
-  void setSourceCurrency(Currency? currency) {
-    Global.instance.selectedStandartCurrency = currency!;
+  Future<void> setSourceCurrency(Currency? currency) async {
     amountController.clear();
     outputController.clear();
-    getCurrencyValues();
+    Global.instance.selectedStandartCurrency = currency!;
+    await getCurrencyValues();
+    targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
   }
 
   void setTargetCurrency(Currency? currency) {
+    amountController.clear();
+    outputController.clear();
     selectedTargetCurrency = currency;
-    targetCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
+    targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == currency);
     update();
   }
 
@@ -50,7 +53,7 @@ class ConversorController extends BaseController {
       return;
     }
 
-    if (targetCurrency != null) outputController.text = "${targetCurrency!.targetCurrency.sifra} ${(amount * targetCurrency!.standardByTargetValue).toStringAsFixed(2).replaceAll('.', ',')}";
+    if (targetCurrencyByCurrency != null) outputController.text = "${targetCurrencyByCurrency!.targetCurrency.sifra} ${(amount * targetCurrencyByCurrency!.standardByTargetValue).toStringAsFixed(2).replaceAll('.', ',')}";
 
     update();
   }
