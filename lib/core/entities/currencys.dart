@@ -7,7 +7,9 @@ enum Currency {
   CHF(name: 'Franco Suíço', code: 'CHF', sifra: '₣', flagEmoji: '🇨🇭'),
   CNY(name: 'Yuan Chinês', code: 'CNY', sifra: '元', flagEmoji: '🇨🇳'),
   NZD(name: 'Dólar Neozelandês', code: 'NZD', sifra: '\$', flagEmoji: '🇳🇿'),
-  ;
+  MXN(name: 'Peso Mexicano', code: 'MXN', sifra: '\$', flagEmoji: '🇲🇽'),
+  RUB(name: 'Rublo Russo', code: 'RUB', sifra: '₽', flagEmoji: '🇷🇺'),
+  INR(name: 'Rúpia Indiana', code: 'INR', sifra: '₹', flagEmoji: '🇮🇳');
 
   const Currency({
     required this.name,

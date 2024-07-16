@@ -1,6 +1,6 @@
 import '../../utils/helpers/exception/aplication_exception.dart';
-import '../entities/currency_by_currency.dart';
 import '../datasource/currency_datasource.dart';
+import '../entities/currency_by_currency.dart';
 
 class CurrencyRepository {
   CurrencyRepository({required this.remoteDataSource});
@@ -18,7 +18,11 @@ class CurrencyRepository {
       if (response.containsKey('data')) {
         final data = response['data'] as Map<String, dynamic>;
         data.forEach((key, value) {
-          currencies.add(CurrencyByCurrency.fromJson(key, value));
+          if (key == 'USD' || key == 'EUR' || key == 'BRL') {
+            currencies.insertAll(0, [CurrencyByCurrency.fromJson(key, value)]);
+          } else {
+            currencies.add(CurrencyByCurrency.fromJson(key, value));
+          }
         });
       }
       return currencies;
