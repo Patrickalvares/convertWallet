@@ -82,7 +82,7 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
               context.pushreplacement(AppRoutes.quotes.path);
               break;
             case 2:
-              // Carteira
+              context.pushreplacement(AppRoutes.wallet.path);
               break;
           }
         },

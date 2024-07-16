@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
+import 'wallet_controller.dart';
 
 class WalletScreen extends StatefulWidget {
-  const WalletScreen({super.key});
+  const WalletScreen({required this.controller, super.key});
+  final WalletController controller;
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();
