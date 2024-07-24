@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart' as foundation;
