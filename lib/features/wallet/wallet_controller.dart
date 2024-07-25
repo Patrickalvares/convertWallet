@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../core/data/singleton/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
@@ -15,6 +17,7 @@ class WalletController extends BaseController {
   CurrencyByCurrency? targetCurrencyByCurrency;
   final CurrencyRepository repository;
   final DatabaseHelper dbHelper;
+  final TextEditingController walletValueController = TextEditingController();
   Currency? selectedTargetCurrency;
   Future<void> getCurrencyValues() async {
     getCurrencyValuesLoading = true;
