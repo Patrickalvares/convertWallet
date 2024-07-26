@@ -5,6 +5,7 @@ import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
 import '../../core/data/singleton/global.dart';
 import '../../core/entities/currencys.dart';
+import '../../core/entities/walleted_currency.dart';
 import 'wallet_controller.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   NotchBottomBarController notchBottomBarController = NotchBottomBarController(index: 2);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +60,10 @@ class _WalletScreenState extends State<WalletScreen> {
               iconDisabledColor: Colors.white,
               iconEnabledColor: Colors.white,
               dropdownColor: Colors.blueGrey[400],
-              onChanged: widget.controller.setSourceCurrency,
+              onChanged: (Currency? newValue) {
+                widget.controller.selectedTargetCurrency = newValue;
+                widget.controller.update();
+              },
               items: Currency.values.where((currency) => currency != widget.controller.selectedTargetCurrency).map<DropdownMenuItem<Currency>>((Currency currency) {
                 return DropdownMenuItem<Currency>(
                   value: currency,
@@ -123,6 +128,51 @@ class _WalletScreenState extends State<WalletScreen> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                if (widget.controller.selectedTargetCurrency != null && widget.controller.walletValueController.text.isNotEmpty) {
+                  final value = double.parse(widget.controller.walletValueController.text.replaceAll(',', '.'));
+                  widget.controller.addCurrencyToWallet(widget.controller.selectedTargetCurrency!, value);
+                }
+              },
+              child: const Text('Adicionar à Carteira'),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Carteira:',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.blueGrey.shade700,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Expanded(
+              child: FutureBuilder<List<WalletedCurrency>>(
+                future: widget.controller.dbHelper.getWalletedCurrencies(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erro: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Text('Nenhuma moeda na carteira');
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final WalletedCurrency walletedCurrency = snapshot.data![index];
+                        return ListTile(
+                          title: Text(walletedCurrency.currency.name),
+                          subtitle: Text(walletedCurrency.amount.toString()),
+                        );
+                      },
+                    );
+                  }
+                },
               ),
             ),
           ],

@@ -17,6 +17,7 @@ enum Currency {
     required this.sifra,
     required this.flagEmoji,
   });
+
   final String name;
   final String code;
   final String sifra;

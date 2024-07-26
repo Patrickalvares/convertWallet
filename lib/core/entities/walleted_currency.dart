@@ -7,4 +7,11 @@ class WalletedCurrency {
   });
   final Currency currency;
   final double amount;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'currency_code': currency.code,
+      'amount': amount,
+    };
+  }
 }

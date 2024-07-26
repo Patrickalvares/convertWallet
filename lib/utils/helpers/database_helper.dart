@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
+import '../../core/entities/walleted_currency.dart';
 
 class DatabaseHelper {
   factory DatabaseHelper() {
@@ -25,8 +26,9 @@ class DatabaseHelper {
     final String path = join(await getDatabasesPath(), 'currencies.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -47,6 +49,26 @@ class DatabaseHelper {
       currency_code TEXT
     )
   ''');
+
+    await db.execute('''
+    CREATE TABLE walleted_currency(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      currency_code TEXT,
+      amount REAL
+    )
+  ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+      CREATE TABLE walleted_currency(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        currency_code TEXT,
+        amount REAL
+      )
+    ''');
+    }
   }
 
   Future<void> insertCurrencyByCurrency(CurrencyByCurrency currency) async {
@@ -97,4 +119,26 @@ class DatabaseHelper {
     }
     return null;
   }
+
+  Future<void> insertWalletedCurrency(WalletedCurrency walletedCurrency) async {
+    final db = await database;
+    await db.insert(
+      'walleted_currency',
+      walletedCurrency.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<WalletedCurrency>> getWalletedCurrencies() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('walleted_currency');
+
+    return List.generate(maps.length, (i) {
+      return WalletedCurrency(
+        currency: Currency.fromCode(maps[i]['currency_code'])!,
+        amount: maps[i]['amount'],
+      );
+    });
+  }
 }
+ 
