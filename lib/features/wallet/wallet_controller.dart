@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/data/singleton/global.dart';
@@ -59,15 +60,31 @@ class WalletController extends BaseController {
     return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
   }
 
-  Future<void> addCurrencyToWallet(Currency currency, double amount) async {
+  Future<void> addCurrencyToWallet(Currency currency, double amount, {VoidCallback? onAdded}) async {
     final WalletedCurrency walletedCurrency = WalletedCurrency(
       currency: currency,
       amount: amount,
     );
 
-    Log.print('Adicionando ${walletedCurrency.currency.code} com valor ${walletedCurrency.amount} à carteira'); // Mensagem de log
+    Log.print('Adicionando ${walletedCurrency.currency.code} com valor ${walletedCurrency.amount} à carteira');
 
     await dbHelper.insertWalletedCurrency(walletedCurrency);
     update();
+    if (onAdded != null) {
+      onAdded();
+    }
+  }
+
+  Future<List<WalletedCurrency>> getGroupedWalletedCurrencies() async {
+    final List<WalletedCurrency> walletedCurrencies = await dbHelper.getWalletedCurrencies();
+
+    final grouped = groupBy(walletedCurrencies, (WalletedCurrency wc) => wc.currency.code);
+    return grouped.entries.map((entry) {
+      final totalAmount = entry.value.fold(0, (sum, wc) => sum + wc.amount.toInt());
+      return WalletedCurrency(
+        currency: entry.value.first.currency,
+        amount: totalAmount.toDouble(),
+      );
+    }).toList();
   }
 }
