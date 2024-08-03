@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
+import 'log.dart';
 
 class DatabaseHelper {
   factory DatabaseHelper() {
@@ -122,6 +123,8 @@ class DatabaseHelper {
 
   Future<void> insertWalletedCurrency(WalletedCurrency walletedCurrency) async {
     final db = await database;
+
+    Log.print('Inserindo na tabela walleted_currency: ${walletedCurrency.toMap()}');
     await db.insert(
       'walleted_currency',
       walletedCurrency.toMap(),
@@ -141,4 +144,3 @@ class DatabaseHelper {
     });
   }
 }
- 

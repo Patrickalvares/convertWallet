@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
-import '../../core/data/singleton/global.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
 import 'wallet_controller.dart';
@@ -18,6 +17,11 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   NotchBottomBarController notchBottomBarController = NotchBottomBarController(index: 2);
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.selectedTargetCurrency = Currency.BRL;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +59,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 'Selecione uma moeda',
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
-              value: Global.instance.selectedStandartCurrency,
+              value: widget.controller.selectedTargetCurrency,
               style: const TextStyle(color: Colors.white),
               iconDisabledColor: Colors.white,
               iconEnabledColor: Colors.white,
@@ -64,7 +68,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 widget.controller.selectedTargetCurrency = newValue;
                 widget.controller.update();
               },
-              items: Currency.values.where((currency) => currency != widget.controller.selectedTargetCurrency).map<DropdownMenuItem<Currency>>((Currency currency) {
+              items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
                 return DropdownMenuItem<Currency>(
                   value: currency,
                   child: Text(
@@ -89,30 +93,17 @@ class _WalletScreenState extends State<WalletScreen> {
               style: const TextStyle(color: Colors.white),
               controller: widget.controller.walletValueController,
               onChanged: (value) {
-                final filteredValue = value.replaceAll(RegExp(r'[^0-9]'), '');
+                final filteredValue = value.replaceAll(RegExp(r'[^\d,]'), '');
                 if (filteredValue.isNotEmpty) {
-                  if (filteredValue.length > 2) {
-                    final intPart = filteredValue.substring(0, filteredValue.length - 2).replaceAll(RegExp(r'^0+'), '');
-                    final decPart = filteredValue.substring(filteredValue.length - 2);
+                  final amount = double.tryParse(filteredValue.replaceAll(',', '.'));
+                  if (amount != null) {
                     widget.controller.walletValueController.value = TextEditingValue(
-                      text: ('$intPart,$decPart'),
-                      selection: TextSelection.collapsed(offset: '$intPart,$decPart'.length),
-                    );
-                  } else if (filteredValue.length == 2) {
-                    widget.controller.walletValueController.value = TextEditingValue(
-                      text: '0,$filteredValue',
-                      selection: TextSelection.collapsed(offset: '0,$filteredValue'.length),
+                      text: filteredValue,
+                      selection: TextSelection.collapsed(offset: filteredValue.length),
                     );
                   } else {
-                    widget.controller.walletValueController.value = TextEditingValue(
-                      text: '0,0$filteredValue',
-                      selection: TextSelection.collapsed(offset: '0,0$filteredValue'.length),
-                    );
+                    widget.controller.walletValueController.clear();
                   }
-                  final amount = double.tryParse(widget.controller.walletValueController.text.replaceAll(',', '.'));
-                  if (amount != null) {
-                    widget.controller.walletValueController.text = '${Global.instance.selectedStandartCurrency.sifra} ${widget.controller.walletValueController.text.replaceAll('.', ',')}';
-                  } else {}
                 } else {
                   widget.controller.walletValueController.clear();
                 }
@@ -132,10 +123,21 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (widget.controller.selectedTargetCurrency != null && widget.controller.walletValueController.text.isNotEmpty) {
-                  final value = double.parse(widget.controller.walletValueController.text.replaceAll(',', '.'));
-                  widget.controller.addCurrencyToWallet(widget.controller.selectedTargetCurrency!, value);
+                  final value = double.tryParse(widget.controller.walletValueController.text.replaceAll(',', '.'));
+                  if (value != null) {
+                    await widget.controller.addCurrencyToWallet(widget.controller.selectedTargetCurrency!, value);
+                    widget.controller.update();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Valor inválido')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Selecione uma moeda e insira um valor válido')),
+                  );
                 }
               },
               child: const Text('Adicionar à Carteira'),

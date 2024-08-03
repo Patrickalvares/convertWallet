@@ -7,6 +7,7 @@ import '../../core/entities/walleted_currency.dart';
 import '../../core/repository/currency_repository.dart';
 import '../../utils/helpers/base_controller.dart';
 import '../../utils/helpers/database_helper.dart';
+import '../../utils/helpers/log.dart';
 
 class WalletController extends BaseController {
   WalletController({
@@ -20,6 +21,7 @@ class WalletController extends BaseController {
   final DatabaseHelper dbHelper;
   final TextEditingController walletValueController = TextEditingController();
   Currency? selectedTargetCurrency;
+
   Future<void> getCurrencyValues() async {
     getCurrencyValuesLoading = true;
     update();
@@ -62,6 +64,9 @@ class WalletController extends BaseController {
       currency: currency,
       amount: amount,
     );
+
+    Log.print('Adicionando ${walletedCurrency.currency.code} com valor ${walletedCurrency.amount} à carteira'); // Mensagem de log
+
     await dbHelper.insertWalletedCurrency(walletedCurrency);
     update();
   }
