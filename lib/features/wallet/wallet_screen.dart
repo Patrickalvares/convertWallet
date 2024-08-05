@@ -126,28 +126,70 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (widget.controller.selectedTargetCurrency != null && widget.controller.walletValueController.text.isNotEmpty) {
-                      final value = double.tryParse(widget.controller.walletValueController.text.replaceAll(',', '.'));
-                      if (value != null) {
-                        await widget.controller.addCurrencyToWallet(
-                          widget.controller.selectedTargetCurrency!,
-                          value,
-                          onAdded: widget.controller.update,
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Valor inválido')),
-                        );
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Selecione uma moeda e insira um valor válido')),
-                      );
-                    }
-                  },
-                  child: const Text('Adicionar à Carteira'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.green)),
+                      onPressed: () async {
+                        if (widget.controller.selectedTargetCurrency != null && widget.controller.walletValueController.text.isNotEmpty) {
+                          final value = double.tryParse(widget.controller.walletValueController.text.replaceAll(',', '.'));
+                          if (value != null) {
+                            await widget.controller.changeCurrencyToWallet(
+                              widget.controller.selectedTargetCurrency!,
+                              value,
+                              onAdded: widget.controller.update,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Valor inválido')),
+                            );
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Selecione uma moeda e insira um valor válido')),
+                          );
+                        }
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.add, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text('Adicionar', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.red)),
+                      onPressed: () async {
+                        if (widget.controller.selectedTargetCurrency != null && widget.controller.walletValueController.text.isNotEmpty) {
+                          final value = double.tryParse(widget.controller.walletValueController.text.replaceAll(',', '.'));
+                          if (value != null) {
+                            await widget.controller.changeCurrencyToWallet(
+                              widget.controller.selectedTargetCurrency!,
+                              value * -1,
+                              onAdded: widget.controller.update,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Valor inválido')),
+                            );
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Selecione uma moeda e insira um valor válido')),
+                          );
+                        }
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.remove, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text('Remover', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 Text(

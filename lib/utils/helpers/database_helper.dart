@@ -172,4 +172,13 @@ class DatabaseHelper {
       whereArgs: [walletedCurrency.currency.code],
     );
   }
+
+  Future<void> deleteWalletedCurrency(String code) async {
+    final db = await database;
+    await db.delete(
+      'walleted_currency',
+      where: 'currency_code = ?',
+      whereArgs: [code],
+    );
+  }
 }

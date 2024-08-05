@@ -59,13 +59,17 @@ class WalletController extends BaseController {
     return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
   }
 
-  Future<void> addCurrencyToWallet(Currency currency, double amount, {VoidCallback? onAdded}) async {
+  Future<void> changeCurrencyToWallet(Currency currency, double amount, {VoidCallback? onAdded}) async {
     final WalletedCurrency? existingCurrency = await dbHelper.getWalletedCurrencyByCode(currency.code);
 
     if (existingCurrency != null) {
       final updatedAmount = existingCurrency.amount + amount;
-      final updatedCurrency = WalletedCurrency(currency: currency, amount: updatedAmount);
-      await dbHelper.updateWalletedCurrency(updatedCurrency);
+      if (updatedAmount <= 0) {
+        await dbHelper.deleteWalletedCurrency(currency.code);
+      } else {
+        final updatedCurrency = WalletedCurrency(currency: currency, amount: updatedAmount);
+        await dbHelper.updateWalletedCurrency(updatedCurrency);
+      }
     } else {
       final newCurrency = WalletedCurrency(currency: currency, amount: amount);
       await dbHelper.insertWalletedCurrency(newCurrency);
