@@ -143,4 +143,33 @@ class DatabaseHelper {
       );
     });
   }
+
+  Future<WalletedCurrency?> getWalletedCurrencyByCode(String code) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'walleted_currency',
+      where: 'currency_code = ?',
+      whereArgs: [code],
+    );
+
+    if (maps.isNotEmpty) {
+      return WalletedCurrency(
+        currency: Currency.fromCode(maps.first['currency_code'])!,
+        amount: maps.first['amount'],
+      );
+    }
+    return null;
+  }
+
+  Future<void> updateWalletedCurrency(WalletedCurrency walletedCurrency) async {
+    final db = await database;
+
+    Log.print('Atualizando na tabela walleted_currency: ${walletedCurrency.toMap()}');
+    await db.update(
+      'walleted_currency',
+      walletedCurrency.toMap(),
+      where: 'currency_code = ?',
+      whereArgs: [walletedCurrency.currency.code],
+    );
+  }
 }

@@ -8,7 +8,6 @@ import '../../core/entities/walleted_currency.dart';
 import '../../core/repository/currency_repository.dart';
 import '../../utils/helpers/base_controller.dart';
 import '../../utils/helpers/database_helper.dart';
-import '../../utils/helpers/log.dart';
 
 class WalletController extends BaseController {
   WalletController({
@@ -61,14 +60,17 @@ class WalletController extends BaseController {
   }
 
   Future<void> addCurrencyToWallet(Currency currency, double amount, {VoidCallback? onAdded}) async {
-    final WalletedCurrency walletedCurrency = WalletedCurrency(
-      currency: currency,
-      amount: amount,
-    );
+    final WalletedCurrency? existingCurrency = await dbHelper.getWalletedCurrencyByCode(currency.code);
 
-    Log.print('Adicionando ${walletedCurrency.currency.code} com valor ${walletedCurrency.amount} à carteira');
+    if (existingCurrency != null) {
+      final updatedAmount = existingCurrency.amount + amount;
+      final updatedCurrency = WalletedCurrency(currency: currency, amount: updatedAmount);
+      await dbHelper.updateWalletedCurrency(updatedCurrency);
+    } else {
+      final newCurrency = WalletedCurrency(currency: currency, amount: amount);
+      await dbHelper.insertWalletedCurrency(newCurrency);
+    }
 
-    await dbHelper.insertWalletedCurrency(walletedCurrency);
     update();
     if (onAdded != null) {
       onAdded();
