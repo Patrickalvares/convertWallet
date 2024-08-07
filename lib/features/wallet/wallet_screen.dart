@@ -43,7 +43,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   children: [
                     const SizedBox(height: 5),
                     Text(
-                      'Moeda a ser adicionada na carteira:',
+                      'Moeda:',
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.blueGrey.shade700,
@@ -86,7 +86,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Valor a ser Convertido:',
+                      'Valor a ser adicionado ou removido:',
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.blueGrey.shade700,
@@ -208,19 +208,46 @@ class _WalletScreenState extends State<WalletScreen> {
                         future: widget.controller.getGroupedWalletedCurrencies(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
+                            return const Center(child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return Text('Erro: ${snapshot.error}');
+                            return Center(child: Text('Erro: ${snapshot.error}'));
                           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return const Text('Nenhuma moeda na carteira');
+                            return const Center(child: Text('Nenhuma moeda na carteira'));
                           } else {
                             return ListView.builder(
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
                                 final WalletedCurrency walletedCurrency = snapshot.data![index];
-                                return ListTile(
-                                  title: Text(walletedCurrency.currency.name),
-                                  subtitle: Text(walletedCurrency.amount.toString()),
+                                return Card(
+                                  color: Colors.blueGrey.shade100,
+                                  margin: const EdgeInsets.symmetric(vertical: 5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                    leading: Text(
+                                      walletedCurrency.currency.flagEmoji,
+                                      style: const TextStyle(fontSize: 30),
+                                    ),
+                                    title: Text(
+                                      walletedCurrency.currency.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    trailing: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${walletedCurrency.currency.sifra} ${walletedCurrency.amount.toStringAsFixed(2).replaceAll('.', ',')}',
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
                             );
@@ -231,8 +258,13 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
-              StyledBottomNavigationBar(
-                notchBottomBarController: notchBottomBarController,
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: StyledBottomNavigationBar(
+                  notchBottomBarController: notchBottomBarController,
+                ),
               ),
             ],
           );
