@@ -79,6 +79,7 @@ class WalletController extends BaseController {
     if (onAdded != null) {
       onAdded();
     }
+    walletValueController.text = '';
   }
 
   Future<List<WalletedCurrency>> getGroupedWalletedCurrencies() async {
