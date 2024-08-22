@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
+import '../../core/data/singleton/global.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
 import 'wallet_controller.dart';
@@ -23,7 +24,7 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    widget.controller.selectedTargetCurrency = Currency.BRL;
+    widget.controller.selectedTargetCurrency = Global.instance.selectedStandartCurrency;
   }
 
   @override
