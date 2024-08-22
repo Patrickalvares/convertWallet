@@ -1,4 +1,4 @@
-import '../../core/data/singleton/global.dart';
+import '../../core/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/service/currencies_service.dart';

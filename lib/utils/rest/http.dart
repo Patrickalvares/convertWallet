@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
-import '../../../utils/helpers/log.dart';
+import '../helpers/log.dart';
 import 'http_interface.dart';
 
 class Http implements IHttp {

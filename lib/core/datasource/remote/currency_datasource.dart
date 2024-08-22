@@ -1,7 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import '../data/rest/http_interface.dart';
-import '../../utils/helpers/exception/aplication_exception.dart';
+import '../../../utils/rest/http_interface.dart';
+import '../../../utils/helpers/aplication_exception.dart';
 
 class CurrencyDatasource {
   CurrencyDatasource({required this.http});

@@ -1,5 +1,5 @@
-import '../../entities/currencys.dart';
-import '../../entities/currency_by_currency.dart';
+import 'entities/currencys.dart';
+import 'entities/currency_by_currency.dart';
 
 class Global {
   factory Global() {

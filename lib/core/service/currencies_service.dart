@@ -1,8 +1,8 @@
-import '../../core/data/singleton/global.dart';
+import '../global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/repository/currency_repository.dart';
-import '../../utils/helpers/database_helper.dart';
+import '../datasource/local/database_helper.dart';
 
 class CurrencyService {
   CurrencyService({

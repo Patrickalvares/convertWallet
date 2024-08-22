@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/data/singleton/global.dart';
+import '../../core/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';

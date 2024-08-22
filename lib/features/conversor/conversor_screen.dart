@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
-import '../../core/data/singleton/global.dart';
+import '../../core/global.dart';
 import '../../core/entities/currencys.dart';
 import 'conversor_controller.dart';
 

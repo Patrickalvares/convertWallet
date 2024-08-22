@@ -1,5 +1,5 @@
-import '../../utils/helpers/exception/aplication_exception.dart';
-import '../datasource/currency_datasource.dart';
+import '../../utils/helpers/aplication_exception.dart';
+import '../datasource/remote/currency_datasource.dart';
 import '../entities/currency_by_currency.dart';
 
 class CurrencyRepository {
