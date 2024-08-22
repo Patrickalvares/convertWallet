@@ -94,4 +94,39 @@ class WalletController extends BaseController {
       );
     }).toList();
   }
+
+  Future<double> calculateTotalInSelectedCurrency() async {
+    if (selectedTargetCurrency == null) return 0.0;
+
+    final List<WalletedCurrency> walletedCurrencies = await dbHelper.getWalletedCurrencies();
+
+    double totalInTargetCurrency = 0;
+
+    for (final walletedCurrency in walletedCurrencies) {
+      final conversionRate = Global.instance.currencies
+          .firstWhere(
+            (currencyByCurrency) => currencyByCurrency.targetCurrency == walletedCurrency.currency,
+            orElse: () => CurrencyByCurrency(
+              code: walletedCurrency.currency.code,
+              standardByTargetValue: 1,
+              targetByStandardRate: 1,
+              targetCurrency: walletedCurrency.currency,
+            ),
+          )
+          .standardByTargetValue;
+
+      totalInTargetCurrency += walletedCurrency.amount / conversionRate;
+    }
+
+    return totalInTargetCurrency;
+  }
+
+  Future<void> changeCurrency(Currency newCurrency) async {
+    selectedTargetCurrency = newCurrency;
+    Global.instance.selectedStandartCurrency = newCurrency;
+    await dbHelper.saveSelectedCurrency(newCurrency);
+    await getCurrencyValues();
+    calculateTotalInSelectedCurrency();
+    update();
+  }
 }

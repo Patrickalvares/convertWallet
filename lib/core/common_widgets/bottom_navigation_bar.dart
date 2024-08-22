@@ -41,7 +41,7 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
             ),
             itemLabelWidget: const Text(
               'Conversor',
-              style: TextStyle(fontSize: 12.5, color: Colors.white),
+              style: TextStyle(fontSize: 11, color: Colors.white),
             ),
           ),
           BottomBarItem(
@@ -55,7 +55,7 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
             ),
             itemLabelWidget: const Text(
               'Cotações',
-              style: TextStyle(fontSize: 12.5, color: Colors.white),
+              style: TextStyle(fontSize: 11, color: Colors.white),
             ),
           ),
           BottomBarItem(
@@ -69,7 +69,7 @@ class _StyledBottomNavigationBarState extends State<StyledBottomNavigationBar> {
             ),
             itemLabelWidget: const Text(
               'Carteira',
-              style: TextStyle(fontSize: 12.5, color: Colors.white),
+              style: TextStyle(fontSize: 11, color: Colors.white),
             ),
           ),
         ],

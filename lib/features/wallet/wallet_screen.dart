@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -71,8 +73,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       iconEnabledColor: Colors.white,
                       dropdownColor: Colors.blueGrey[400],
                       onChanged: (Currency? newValue) {
-                        widget.controller.selectedTargetCurrency = newValue;
-                        widget.controller.update();
+                        widget.controller.changeCurrency(newValue!);
                       },
                       items: Currency.values.map<DropdownMenuItem<Currency>>((Currency currency) {
                         return DropdownMenuItem<Currency>(
@@ -193,7 +194,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     Text(
                       'Carteira:',
                       style: TextStyle(
@@ -202,7 +203,6 @@ class _WalletScreenState extends State<WalletScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 5),
                     Expanded(
                       child: FutureBuilder<List<WalletedCurrency>>(
                         future: widget.controller.getGroupedWalletedCurrencies(),
@@ -214,47 +214,84 @@ class _WalletScreenState extends State<WalletScreen> {
                           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                             return const Center(child: Text('Nenhuma moeda na carteira'));
                           } else {
-                            return ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                final WalletedCurrency walletedCurrency = snapshot.data![index];
-                                return Card(
-                                  color: Colors.blueGrey.shade100,
-                                  margin: const EdgeInsets.symmetric(vertical: 5),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                                    leading: Text(
-                                      walletedCurrency.currency.flagEmoji,
-                                      style: const TextStyle(fontSize: 30),
-                                    ),
-                                    title: Text(
-                                      walletedCurrency.currency.name,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    trailing: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${walletedCurrency.currency.sifra} ${walletedCurrency.amount.toStringAsFixed(2).replaceAll('.', ',')}',
-                                          style: const TextStyle(fontSize: 16),
+                            return Column(
+                              children: [
+                                FutureBuilder<double>(
+                                  future: widget.controller.calculateTotalInSelectedCurrency(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
+                                    } else if (snapshot.hasError) {
+                                      return Center(child: Text('Erro: ${snapshot.error}'));
+                                    } else {
+                                      final totalConverted = snapshot.data ?? 0.0;
+                                      return Card(
+                                        color: Colors.blueGrey.shade100,
+                                        margin: const EdgeInsets.symmetric(vertical: 5),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15),
                                         ),
-                                      ],
-                                    ),
+                                        child: ListTile(
+                                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                          leading: const Text(
+                                            'Total:',
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          trailing: Text(
+                                            '${widget.controller.selectedTargetCurrency?.sifra ?? ''} ${totalConverted.toStringAsFixed(2).replaceAll('.', ',')}',
+                                            style: const TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, index) {
+                                      final WalletedCurrency walletedCurrency = snapshot.data![index];
+                                      return Card(
+                                        color: Colors.blueGrey.shade100,
+                                        margin: const EdgeInsets.symmetric(vertical: 5),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        child: ListTile(
+                                          contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                          leading: Text(
+                                            walletedCurrency.currency.flagEmoji,
+                                            style: const TextStyle(fontSize: 30),
+                                          ),
+                                          title: Text(
+                                            walletedCurrency.currency.name,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          trailing: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '${walletedCurrency.currency.sifra} ${walletedCurrency.amount.toStringAsFixed(2).replaceAll('.', ',')}',
+                                                style: const TextStyle(fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                              ],
                             );
                           }
                         },
                       ),
                     ),
+                    const SizedBox(height: 70),
                   ],
                 ),
               ),
@@ -262,10 +299,33 @@ class _WalletScreenState extends State<WalletScreen> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: StyledBottomNavigationBar(
-                  notchBottomBarController: notchBottomBarController,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 2,
+                      sigmaY: 2,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1000),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0),
+                            Colors.black.withOpacity(0.05),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                      child: const SizedBox(
+                        height: 60,
+                      ),
+                    ),
+                  ),
                 ),
               ),
+              StyledBottomNavigationBar(notchBottomBarController: notchBottomBarController),
             ],
           );
         },

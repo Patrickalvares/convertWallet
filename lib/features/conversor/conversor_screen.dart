@@ -237,7 +237,7 @@ class _ConversorScreenState extends State<ConversorScreen> {
                                 const SizedBox(height: 35),
                                 Center(
                                   child: ConstrainedBox(
-                                    constraints: const BoxConstraints.tightFor(width: 200),
+                                    constraints: const BoxConstraints.tightFor(width: 220),
                                     child: ElevatedButton(
                                       style: ButtonStyle(
                                         backgroundColor: WidgetStateProperty.all(
