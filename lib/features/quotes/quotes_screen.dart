@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      widget.controller.initialized();
+      widget.controller.initialize();
     });
   }
 
@@ -60,6 +60,7 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     Expanded(
                       child: Visibility(
+                        visible: !(Global.instance.currencies.isEmpty || widget.controller.getCurrencyValuesLoading),
                         replacement: ListView.builder(
                           itemCount: 10,
                           itemBuilder: (context, index) {
@@ -104,7 +105,6 @@ class _MainScreenState extends State<MainScreen> {
                             );
                           },
                         ),
-                        visible: !(Global.instance.currencies.isEmpty || !widget.controller.getCurrencyValuesLoading),
                         child: RefreshIndicator(
                           backgroundColor: Colors.blueGrey.shade700,
                           edgeOffset: 100,

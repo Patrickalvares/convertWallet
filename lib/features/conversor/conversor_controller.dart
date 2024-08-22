@@ -3,29 +3,26 @@ import 'package:flutter/material.dart';
 import '../../core/data/singleton/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
-import '../../core/repository/currency_repository.dart';
+import '../../core/service/currencies_service.dart';
 import '../../utils/helpers/base_controller.dart';
-import '../../utils/helpers/database_helper.dart';
 
 class ConversorController extends BaseController {
   ConversorController({
-    required this.dbHelper,
-    required this.repository,
-  });
+    required CurrencyService currencyService,
+  }) : _currencyService = currencyService;
+
+  final CurrencyService _currencyService;
   final TextEditingController amountController = TextEditingController();
   final TextEditingController outputController = TextEditingController();
-  final CurrencyRepository repository;
   CurrencyByCurrency? targetCurrencyByCurrency;
   bool getCurrencyValuesLoading = false;
-
-  final DatabaseHelper dbHelper;
 
   Currency? selectedTargetCurrency;
   double? convertedValue;
 
   Future<void> initialize() async {
-    _loadSelectedCurrency();
-    Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
+    await _currencyService.loadSelectedCurrency();
+    Global.instance.currencies = await _currencyService.dbHelper.getCurrencyByCurrencies();
     targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
     update();
   }
@@ -34,8 +31,9 @@ class ConversorController extends BaseController {
     amountController.clear();
     outputController.clear();
     Global.instance.selectedStandartCurrency = currency!;
-    await getCurrencyValues();
+    await _currencyService.getCurrencyValues();
     targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
+    update();
   }
 
   void setTargetCurrency(Currency? currency) {
@@ -49,55 +47,13 @@ class ConversorController extends BaseController {
   Future<void> convert(double amount) async {
     if (selectedTargetCurrency == null || amount == 0) {
       outputController.clear();
-
       return;
     }
 
-    if (targetCurrencyByCurrency != null) outputController.text = "${targetCurrencyByCurrency!.targetCurrency.sifra} ${(amount * targetCurrencyByCurrency!.standardByTargetValue).toStringAsFixed(2).replaceAll('.', ',')}";
-
-    update();
-  }
-
-  Future<void> _loadSelectedCurrency() async {
-    final currency = await dbHelper.getSelectedCurrency();
-    if (currency == null) return;
-    Global.instance.selectedStandartCurrency = currency;
-    if (currency == Currency.BRL) {
-      selectedTargetCurrency = Currency.USD;
-    } else {
-      selectedTargetCurrency = Currency.BRL;
+    if (targetCurrencyByCurrency != null) {
+      outputController.text = "${targetCurrencyByCurrency!.targetCurrency.sifra} ${(amount * targetCurrencyByCurrency!.standardByTargetValue).toStringAsFixed(2).replaceAll('.', ',')}";
     }
+
     update();
-  }
-
-  Future<void> getCurrencyValues() async {
-    getCurrencyValuesLoading = true;
-    update();
-
-    await repository
-        .obterCurrencyByCurrency(
-      params: generateCurrencyCombinations(Global.instance.selectedStandartCurrency),
-    )
-        .then((value) async {
-      await dbHelper.clearCurrencyByCurrencies();
-      Global.instance.currencies = value;
-      for (final currency in value) {
-        await dbHelper.insertCurrencyByCurrency(currency);
-      }
-    }).catchError((error) {});
-
-    getCurrencyValuesLoading = false;
-    update();
-  }
-
-  String generateCurrencyCombinations(Currency selectedCurrency) {
-    final List<String> combinations = [];
-
-    for (final Currency currency in Currency.values) {
-      if (currency != selectedCurrency) {
-        combinations.add('${currency.code}');
-      }
-    }
-    return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
   }
 }

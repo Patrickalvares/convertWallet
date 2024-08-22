@@ -1,24 +1,20 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/data/singleton/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
-import '../../core/repository/currency_repository.dart';
+import '../../core/service/currencies_service.dart';
 import '../../utils/helpers/base_controller.dart';
-import '../../utils/helpers/database_helper.dart';
 
 class WalletController extends BaseController {
   WalletController({
-    required this.repository,
-    required this.dbHelper,
-  });
+    required CurrencyService currencyService,
+  }) : _currencyService = currencyService;
 
+  final CurrencyService _currencyService;
   bool getCurrencyValuesLoading = false;
   CurrencyByCurrency? targetCurrencyByCurrency;
-  final CurrencyRepository repository;
-  final DatabaseHelper dbHelper;
   final TextEditingController walletValueController = TextEditingController();
   Currency? selectedTargetCurrency;
 
@@ -26,53 +22,32 @@ class WalletController extends BaseController {
     getCurrencyValuesLoading = true;
     update();
 
-    await repository
-        .obterCurrencyByCurrency(
-      params: generateCurrencyCombinations(Global.instance.selectedStandartCurrency),
-    )
-        .then((value) async {
-      await dbHelper.clearCurrencyByCurrencies();
-      Global.instance.currencies = value;
-      for (final currency in value) {
-        await dbHelper.insertCurrencyByCurrency(currency);
-      }
-    }).catchError((error) {});
-
+    await _currencyService.getCurrencyValues();
     getCurrencyValuesLoading = false;
     update();
   }
 
   Future<void> setSourceCurrency(Currency? currency) async {
     Global.instance.selectedStandartCurrency = currency!;
-    await getCurrencyValues();
+    await _currencyService.getCurrencyValues();
     targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
-  }
-
-  String generateCurrencyCombinations(Currency selectedCurrency) {
-    final List<String> combinations = [];
-
-    for (final Currency currency in Currency.values) {
-      if (currency != selectedCurrency) {
-        combinations.add('${currency.code}');
-      }
-    }
-    return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
+    update();
   }
 
   Future<void> changeCurrencyToWallet(Currency currency, double amount, {VoidCallback? onAdded}) async {
-    final WalletedCurrency? existingCurrency = await dbHelper.getWalletedCurrencyByCode(currency.code);
+    final WalletedCurrency? existingCurrency = await _currencyService.dbHelper.getWalletedCurrencyByCode(currency.code);
 
     if (existingCurrency != null) {
       final updatedAmount = existingCurrency.amount + amount;
       if (updatedAmount <= 0) {
-        await dbHelper.deleteWalletedCurrency(currency.code);
+        await _currencyService.dbHelper.deleteWalletedCurrency(currency.code);
       } else {
         final updatedCurrency = WalletedCurrency(currency: currency, amount: updatedAmount);
-        await dbHelper.updateWalletedCurrency(updatedCurrency);
+        await _currencyService.dbHelper.updateWalletedCurrency(updatedCurrency);
       }
     } else {
       final newCurrency = WalletedCurrency(currency: currency, amount: amount);
-      await dbHelper.insertWalletedCurrency(newCurrency);
+      await _currencyService.dbHelper.insertWalletedCurrency(newCurrency);
     }
 
     update();
@@ -83,22 +58,15 @@ class WalletController extends BaseController {
   }
 
   Future<List<WalletedCurrency>> getGroupedWalletedCurrencies() async {
-    final List<WalletedCurrency> walletedCurrencies = await dbHelper.getWalletedCurrencies();
+    final List<WalletedCurrency> walletedCurrencies = await _currencyService.dbHelper.getWalletedCurrencies();
 
-    final grouped = groupBy(walletedCurrencies, (WalletedCurrency wc) => wc.currency.code);
-    return grouped.entries.map((entry) {
-      final totalAmount = entry.value.fold(0, (sum, wc) => sum + wc.amount.toInt());
-      return WalletedCurrency(
-        currency: entry.value.first.currency,
-        amount: totalAmount.toDouble(),
-      );
-    }).toList();
+    return walletedCurrencies;
   }
 
   Future<double> calculateTotalInSelectedCurrency() async {
     if (selectedTargetCurrency == null) return 0.0;
 
-    final List<WalletedCurrency> walletedCurrencies = await dbHelper.getWalletedCurrencies();
+    final List<WalletedCurrency> walletedCurrencies = await _currencyService.dbHelper.getWalletedCurrencies();
 
     double totalInTargetCurrency = 0;
 
@@ -124,9 +92,9 @@ class WalletController extends BaseController {
   Future<void> changeCurrency(Currency newCurrency) async {
     selectedTargetCurrency = newCurrency;
     Global.instance.selectedStandartCurrency = newCurrency;
-    await dbHelper.saveSelectedCurrency(newCurrency);
+    await _currencyService.dbHelper.saveSelectedCurrency(newCurrency);
     await getCurrencyValues();
-    calculateTotalInSelectedCurrency();
+    await calculateTotalInSelectedCurrency();
     update();
   }
 }

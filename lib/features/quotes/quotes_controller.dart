@@ -1,59 +1,32 @@
 import '../../core/data/singleton/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
-import '../../core/repository/currency_repository.dart';
+import '../../core/service/currencies_service.dart';
 import '../../utils/helpers/base_controller.dart';
-import '../../utils/helpers/database_helper.dart';
 
 class QuotesController extends BaseController {
   QuotesController({
-    required this.repository,
-    required this.dbHelper,
-  });
-  final CurrencyRepository repository;
+    required CurrencyService currencyService,
+  }) : _currencyService = currencyService;
 
+  final CurrencyService _currencyService;
   List<CurrencyByCurrency> currencieByCurrencysFiltred = [];
   bool getCurrencyValuesLoading = false;
 
-  final DatabaseHelper dbHelper;
-  Future<void> initialized() async {
-    await _loadSelectedCurrency();
+  Future<void> initialize() async {
+    await _currencyService.loadSelectedCurrency();
     await getCurrencyValues();
   }
 
   Future<void> getCurrencyValues() async {
-    getCurrencyValuesLoading = false;
-    update();
-
-    await repository
-        .obterCurrencyByCurrency(
-      params: generateCurrencyCombinations(Global.instance.selectedStandartCurrency),
-    )
-        .then((value) async {
-      await dbHelper.clearCurrencyByCurrencies();
-      Global.instance.currencies = value;
-      currencieByCurrencysFiltred = Global.instance.currencies;
-      for (final currency in value) {
-        await dbHelper.insertCurrencyByCurrency(currency);
-      }
-    }).catchError((_) async {
-      Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
-      currencieByCurrencysFiltred = Global.instance.currencies;
-    });
-
     getCurrencyValuesLoading = true;
     update();
-  }
 
-  String generateCurrencyCombinations(Currency selectedCurrency) {
-    final List<String> combinations = [];
+    await _currencyService.getCurrencyValues();
+    currencieByCurrencysFiltred = Global.instance.currencies;
 
-    for (final Currency currency in Currency.values) {
-      if (currency != selectedCurrency) {
-        combinations.add('${currency.code}');
-      }
-    }
-    return "&currencies=${combinations.join(',')}&base_currency=${selectedCurrency.code}";
+    getCurrencyValuesLoading = false;
+    update();
   }
 
   Future<void> filtrarCurrencieByCurrencys(String value) async {
@@ -73,16 +46,8 @@ class QuotesController extends BaseController {
 
   Future<void> changeCurrency(Currency newCurrency) async {
     Global.instance.selectedStandartCurrency = newCurrency;
-    await dbHelper.saveSelectedCurrency(newCurrency);
+    await _currencyService.dbHelper.saveSelectedCurrency(newCurrency);
+    await _currencyService.getCurrencyValues();
     update();
-  }
-
-  Future<void> _loadSelectedCurrency() async {
-    final currency = await dbHelper.getSelectedCurrency();
-    if (currency != null) {
-      Global.instance.selectedStandartCurrency = currency;
-    } else {
-      Global.instance.selectedStandartCurrency = Currency.BRL;
-    }
   }
 }
