@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
-import '../../core/global.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
+import '../../core/global.dart';
 import 'wallet_controller.dart';
 
 class WalletScreen extends StatefulWidget {

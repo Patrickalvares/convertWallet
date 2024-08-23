@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
+import '../../core/global.dart';
 import '../../core/service/currencies_service.dart';
 import '../../utils/helpers/base_controller.dart';
 
@@ -23,7 +23,7 @@ class ConversorController extends BaseController {
   Future<void> initialize() async {
     await _currencyService.loadSelectedCurrency();
     Global.instance.currencies = await _currencyService.dbHelper.getCurrencyByCurrencies();
-    targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
+
     update();
   }
 
