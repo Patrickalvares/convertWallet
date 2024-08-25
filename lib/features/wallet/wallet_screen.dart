@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
@@ -232,15 +233,22 @@ class _WalletScreenState extends State<WalletScreen> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(15),
                                         ),
-                                        child: ListTile(
-                                          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-                                          leading: const Text(
-                                            'Total:',
-                                            style: TextStyle(fontSize: 15),
-                                          ),
-                                          trailing: Text(
-                                            '${widget.controller.selectedTargetCurrency?.sifra ?? ''} ${totalConverted.toStringAsFixed(2).replaceAll('.', ',')}',
-                                            style: const TextStyle(fontSize: 16),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(15),
+                                          child: Shimmer(
+                                            enabled: widget.controller.getCurrencyValuesLoading,
+                                            color: Colors.blueGrey.shade700,
+                                            child: ListTile(
+                                              contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                              leading: Text(
+                                                widget.controller.getCurrencyValuesLoading ? '' : 'Total:',
+                                                style: const TextStyle(fontSize: 15),
+                                              ),
+                                              trailing: Text(
+                                                widget.controller.getCurrencyValuesLoading ? '' : '${widget.controller.selectedTargetCurrency?.sifra ?? ''} ${totalConverted.toStringAsFixed(2).replaceAll('.', ',')}',
+                                                style: const TextStyle(fontSize: 16),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       );
@@ -258,28 +266,35 @@ class _WalletScreenState extends State<WalletScreen> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(15),
                                         ),
-                                        child: ListTile(
-                                          contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                                          leading: Text(
-                                            walletedCurrency.currency.flagEmoji,
-                                            style: const TextStyle(fontSize: 30),
-                                          ),
-                                          title: Text(
-                                            walletedCurrency.currency.name,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          trailing: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '${walletedCurrency.currency.sifra} ${walletedCurrency.amount.toStringAsFixed(2).replaceAll('.', ',')}',
-                                                style: const TextStyle(fontSize: 16),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(15),
+                                          child: Shimmer(
+                                            enabled: widget.controller.getCurrencyValuesLoading,
+                                            color: Colors.blueGrey.shade700,
+                                            child: ListTile(
+                                              contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                              leading: Text(
+                                                widget.controller.getCurrencyValuesLoading ? '' : walletedCurrency.currency.flagEmoji,
+                                                style: const TextStyle(fontSize: 30),
                                               ),
-                                            ],
+                                              title: Text(
+                                                widget.controller.getCurrencyValuesLoading ? '' : walletedCurrency.currency.name,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              trailing: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    widget.controller.getCurrencyValuesLoading ? '' : '${walletedCurrency.currency.sifra} ${walletedCurrency.amount.toStringAsFixed(2).replaceAll('.', ',')}',
+                                                    style: const TextStyle(fontSize: 16),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       );

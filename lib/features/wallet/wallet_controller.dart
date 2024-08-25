@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../core/global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
+import '../../core/global.dart';
 import '../../core/service/currencies_service.dart';
 import '../../utils/helpers/base_controller.dart';
 
@@ -28,6 +28,7 @@ class WalletController extends BaseController {
   }
 
   Future<void> setSourceCurrency(Currency? currency) async {
+    if (getCurrencyValuesLoading) return;
     Global.instance.selectedStandartCurrency = currency!;
     await _currencyService.getCurrencyValues();
     targetCurrencyByCurrency = Global.instance.currencies.firstWhere((element) => element.targetCurrency == selectedTargetCurrency);
@@ -35,6 +36,7 @@ class WalletController extends BaseController {
   }
 
   Future<void> changeCurrencyToWallet(Currency currency, double amount, {VoidCallback? onAdded}) async {
+    if (getCurrencyValuesLoading) return;
     final WalletedCurrency? existingCurrency = await _currencyService.dbHelper.getWalletedCurrencyByCode(currency.code);
 
     if (existingCurrency != null) {
@@ -90,6 +92,7 @@ class WalletController extends BaseController {
   }
 
   Future<void> changeCurrency(Currency newCurrency) async {
+    if (getCurrencyValuesLoading) return;
     selectedTargetCurrency = newCurrency;
     Global.instance.selectedStandartCurrency = newCurrency;
     await _currencyService.dbHelper.saveSelectedCurrency(newCurrency);
