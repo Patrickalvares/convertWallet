@@ -56,4 +56,22 @@ class ConversorController extends BaseController {
 
     update();
   }
+
+  void swapCurrencies() {
+    if (selectedTargetCurrency == null) return;
+    targetCurrencyByCurrency = Global.instance.currencies.firstWhere(
+      (element) => element.targetCurrency == selectedTargetCurrency,
+      orElse: () => targetCurrencyByCurrency!,
+    );
+
+    final Currency? temp = Global.instance.selectedStandartCurrency;
+    Global.instance.selectedStandartCurrency = selectedTargetCurrency!;
+    selectedTargetCurrency = temp;
+
+    final amount = double.tryParse(amountController.text.replaceAll(',', '.'));
+    if (amount != null) {
+      convert(amount);
+    }
+    update();
+  }
 }

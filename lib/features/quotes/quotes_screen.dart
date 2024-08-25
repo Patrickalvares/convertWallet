@@ -6,8 +6,8 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
-import '../../core/global.dart';
 import '../../core/entities/currencys.dart';
+import '../../core/global.dart';
 import 'quotes_controller.dart';
 
 class MainScreen extends StatefulWidget {
@@ -264,9 +264,7 @@ class _MainScreenState extends State<MainScreen> {
                                     color: Colors.white,
                                     iconSize: 25,
                                     onPressed: () {
-                                      setState(() {
-                                        isTargetByStandardRate = !isTargetByStandardRate;
-                                      });
+                                      isTargetByStandardRate = !isTargetByStandardRate;
                                       widget.controller.update();
                                     },
                                   ),

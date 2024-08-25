@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/common_widgets/app_bar.dart';
 import '../../core/common_widgets/bottom_navigation_bar.dart';
-import '../../core/global.dart';
 import '../../core/entities/currencys.dart';
+import '../../core/global.dart';
 import 'conversor_controller.dart';
 
 class ConversorScreen extends StatefulWidget {
@@ -235,37 +235,54 @@ class _ConversorScreenState extends State<ConversorScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 35),
-                                Center(
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints.tightFor(width: 220),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor: WidgetStateProperty.all(
-                                          Colors.blueGrey[400],
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ConstrainedBox(
+                                      constraints: const BoxConstraints.tightFor(width: 220),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor: WidgetStateProperty.all(
+                                            Colors.blueGrey[400],
+                                          ),
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        final amount = double.tryParse(widget.controller.amountController.text);
-                                        if (amount != null) {
-                                          widget.controller.convert(amount);
-                                        }
-                                      },
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.change_circle_outlined, color: Colors.white, size: 35),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              'Converter',
-                                              style: TextStyle(color: Colors.white, fontSize: 20),
-                                            ),
-                                          ],
+                                        onPressed: () {
+                                          final amount = double.tryParse(widget.controller.amountController.text);
+                                          if (amount != null) {
+                                            widget.controller.convert(amount);
+                                          }
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(Icons.change_circle_outlined, color: Colors.white, size: 35),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                'Converter',
+                                                style: TextStyle(color: Colors.white, fontSize: 20),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 10),
+                                    Container(
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(1000), color: Colors.blueGrey[400]),
+                                      height: 50,
+                                      width: 50,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.swap_vert),
+                                        color: Colors.white,
+                                        iconSize: 35,
+                                        onPressed: () {
+                                          widget.controller.swapCurrencies();
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
