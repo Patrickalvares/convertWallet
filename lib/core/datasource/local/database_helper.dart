@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../utils/helpers/log.dart';
 import '../../entities/currency_by_currency.dart';
 import '../../entities/currencys.dart';
 import '../../entities/walleted_currency.dart';
-import '../../../utils/helpers/log.dart';
 
 class DatabaseHelper {
   factory DatabaseHelper() {
@@ -180,5 +180,10 @@ class DatabaseHelper {
       where: 'currency_code = ?',
       whereArgs: [code],
     );
+  }
+
+  Future<void> deleteAllWalletedCurrencies() async {
+    final db = await database;
+    await db.delete('walleted_currency');
   }
 }

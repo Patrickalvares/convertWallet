@@ -9,6 +9,7 @@ import '../../core/common_widgets/bottom_navigation_bar.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/entities/walleted_currency.dart';
 import '../../core/global.dart';
+import '../../utils/extensions/build_context.dart';
 import 'wallet_controller.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -192,6 +193,53 @@ class _WalletScreenState extends State<WalletScreen> {
                               SizedBox(width: 5),
                               Text('Remover', style: TextStyle(color: Colors.white)),
                             ],
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(1000), color: Colors.blueGrey[400]),
+                          height: 50,
+                          width: 50,
+                          child: IconButton(
+                            icon: const Icon(Icons.delete_forever),
+                            color: Colors.white,
+                            iconSize: 25,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.blueGrey.shade50,
+                                    title: Text(
+                                      'Limpar carteira',
+                                      style: TextStyle(color: Colors.blueGrey.shade700),
+                                    ),
+                                    content: Text(
+                                      'Deseja realmente limpar a carteira?',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey.shade700,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          context.pop();
+                                        },
+                                        child: Text('Cancelar', style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 20)),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          widget.controller.deleteAllWalletedCurrencies();
+                                          context.pop();
+                                        },
+                                        child: const Text('Limpar', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20)),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
                       ],

@@ -100,4 +100,10 @@ class WalletController extends BaseController {
     await calculateTotalInSelectedCurrency();
     update();
   }
+
+  Future<void> deleteAllWalletedCurrencies() async {
+    walletValueController.text = '';
+    await _currencyService.dbHelper.deleteAllWalletedCurrencies();
+    update();
+  }
 }
