@@ -5,7 +5,7 @@ class SimpleAppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text(
-        'Coincierge',
+        'ConvertWallet',
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,

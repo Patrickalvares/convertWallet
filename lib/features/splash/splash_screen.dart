@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Coincierge 💱',
+                  'ConvertWallet 💱',
                   style: TextStyle(
                     fontSize: 45,
                     fontWeight: FontWeight.bold,
