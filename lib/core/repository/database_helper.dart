@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../utils/helpers/log.dart';
-import '../../entities/currency_by_currency.dart';
-import '../../entities/currencys.dart';
-import '../../entities/walleted_currency.dart';
+import '../../utils/helpers/log.dart';
+import '../entities/currency_by_currency.dart';
+import '../entities/currencys.dart';
+import '../entities/walleted_currency.dart';
 
 class DatabaseHelper {
   factory DatabaseHelper() {

@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../datasource/local/database_helper.dart';
+import '../repository/database_helper.dart';
 import '../../utils/rest/http.dart';
 import '../../utils/rest/http_interface.dart';
 import '../datasource/remote/currency_datasource.dart';
