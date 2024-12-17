@@ -27,7 +27,7 @@ class DatabaseHelper {
     final String path = join(await getDatabasesPath(), 'currencies.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -58,20 +58,50 @@ class DatabaseHelper {
       amount REAL
     )
   ''');
+
+    await db.execute('''
+    CREATE TABLE last_updated(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      updated_at TEXT
+    )
+  ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
+    if (oldVersion < 3) {
       await db.execute('''
-      CREATE TABLE walleted_currency(
+      CREATE TABLE last_updated(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        currency_code TEXT,
-        amount REAL
+        updated_at TEXT
       )
     ''');
     }
   }
 
+  // Métodos para Last Updated
+  Future<void> saveLastUpdated(DateTime dateTime) async {
+    final db = await database;
+
+    await db.delete('last_updated');
+    await db.insert(
+      'last_updated',
+      {'updated_at': dateTime.toIso8601String()},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<DateTime?> getLastUpdated() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query('last_updated');
+
+    if (result.isNotEmpty) {
+      final updatedAt = result.first['updated_at'] as String;
+      return DateTime.parse(updatedAt);
+    }
+    return null;
+  }
+
+  // Métodos para CurrencyByCurrency
   Future<void> insertCurrencyByCurrency(CurrencyByCurrency currency) async {
     final db = await database;
     await db.insert(
@@ -94,6 +124,7 @@ class DatabaseHelper {
     await db.delete('currency_by_currency');
   }
 
+  // Métodos para SelectedCurrency
   Future<void> saveSelectedCurrency(Currency currency) async {
     final db = await database;
 
@@ -121,6 +152,7 @@ class DatabaseHelper {
     return null;
   }
 
+  // Métodos para WalletedCurrency
   Future<void> insertWalletedCurrency(WalletedCurrency walletedCurrency) async {
     final db = await database;
 

@@ -1,7 +1,7 @@
-import '../global.dart';
 import '../../core/entities/currency_by_currency.dart';
 import '../../core/entities/currencys.dart';
 import '../../core/repository/currency_repository.dart';
+import '../global.dart';
 import '../repository/database_helper.dart';
 
 class CurrencyService {
@@ -27,13 +27,21 @@ class CurrencyService {
       final List<CurrencyByCurrency> value = await repository.obterCurrencyByCurrency(
         params: generateCurrencyCombinations(Global.instance.selectedStandartCurrency),
       );
+
       await dbHelper.clearCurrencyByCurrencies();
       Global.instance.currencies = value;
+
       for (final currency in value) {
         await dbHelper.insertCurrencyByCurrency(currency);
       }
+
+      final DateTime now = DateTime.now();
+      await dbHelper.saveLastUpdated(now);
+      Global.instance.lastUpdated = now;
+      Global.instance.update();
     } catch (_) {
       Global.instance.currencies = await dbHelper.getCurrencyByCurrencies();
+      Global.instance.lastUpdated = await dbHelper.getLastUpdated();
     }
   }
 
